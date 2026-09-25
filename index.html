@@ -55,11 +55,10 @@
         }
 
         .sidebar:hover .sidebar-menu-label {
-            //color: #38bdf8;
             color: #ffffff;
         }
 
-        /* Non-interactive brand text at the bottom */
+        /* Non-interactive brand text at the bottom - forced pure white */
         .sidebar-brand {
             writing-mode: vertical-rl;
             text-orientation: mixed;
@@ -71,8 +70,8 @@
             font-size: 0.8rem;
             letter-spacing: 2px;
             text-transform: uppercase;
-            color: #888;
-            font-weight: 500;
+            color: #ffffff;
+            font-weight: 600;
             white-space: nowrap;
         }
 
@@ -208,6 +207,10 @@
             height: 100vh;
             object-fit: cover;
             display: block;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            pointer-events: none;
         }
 
         /* Desktop Only: 40px inset border framing exclusively on the closeup side */
@@ -260,6 +263,7 @@
             .sidebar-brand span {
                 font-size: 0.9rem;
                 letter-spacing: 1px;
+                color: #ffffff;
             }
 
             .menu-slide-panel {
@@ -314,18 +318,12 @@
                 height: 100dvh;
                 object-fit: cover;
             }
-            .media-box video {
-    -webkit-user-select: none;
-    user-select: none;
-    -webkit-touch-callout: none;
-    pointer-events: none; /* Optional: completely blocks direct mouse interaction with the video player */
-}
         }
     </style>
 </head>
 <body>
 
-    <!-- Slim Sidebar with Vertical MENU at top and non-interactive Shane Wilson at bottom -->
+    <!-- Slim Sidebar with Vertical MENU at top and pure white Shane Wilson at bottom -->
     <aside class="sidebar" onclick="toggleMenuPopup()">
         <div class="sidebar-menu-label">MENU</div>
         <div class="sidebar-brand">
@@ -342,6 +340,8 @@
             </div>
             <div class="menu-panel-links">
                 <a href="#char1" onclick="toggleMenuPopup()">Love on Tour</a>
+                <a href="#char2" onclick="toggleMenuPopup()">Mirror</a>
+                <a href="#char3" onclick="toggleMenuPopup()">Silver Fringe</a>
             </div>
         </div>
     </div>
@@ -349,38 +349,38 @@
     <!-- Main Portfolio Content -->
     <main class="main-content">
 
-        <!-- Green Fringe Section (Two rows of 2 side-by-side videos on desktop, stacked individually on mobile) -->
+        <!-- Green Fringe / Love on Tour Section -->
         <section id="char1" class="section">
             <div class="grid-container">
                 <div class="media-box">
-                    <video src="https://shanewilson1-design.github.io/Portfolio/HS_GreenFringe_Full-002.mp4" autoplay loop muted playsinline></video>
+                    <video src="HS_GreenFringe_Full-002.mp4" autoplay loop muted playsinline></video>
                 </div>
                 <div class="media-box closeup-framed">
-                    <video src="https://shanewilson1-design.github.io/Portfolio/Video/HS_GreenFringe_Closeup-001.mp4" autoplay loop muted playsinline></video>
+                    <video src="HS_GreenFringe_Closeup-001.mp4" autoplay loop muted playsinline></video>
                 </div>
             </div>
             <div class="grid-container">
                 <div class="media-box closeup-framed">
-                    <video src="https://shanewilson1-design.github.io/Portfolio/Video/HS_GreenFringe_Closeup-001.mp4" autoplay loop muted playsinline></video>
+                    <video src="HS_GreenFringe_Closeup-001.mp4" autoplay loop muted playsinline></video>
                 </div>
                 <div class="media-box">
-                    <video src="https://shanewilson1-design.github.io/Portfolio/HS_GreenFringe_Full-002.mp4" autoplay loop muted playsinline></video>
+                    <video src="HS_GreenFringe_Full-002.mp4" autoplay loop muted playsinline></video>
                 </div>
             </div>
             <div class="grid-container">
                 <div class="media-box">
-                    <video src="https://shanewilson1-design.github.io/Portfolio/HS_GreenFringe_Full-002.mp4" autoplay loop muted playsinline></video>
+                    <video src="HS_GreenFringe_Full-002.mp4" autoplay loop muted playsinline></video>
                 </div>
                 <div class="media-box closeup-framed">
-                    <video src="https://shanewilson1-design.github.io/Portfolio/Video/HS_GreenFringe_Closeup-001.mp4" autoplay loop muted playsinline></video>
+                    <video src="HS_GreenFringe_Closeup-001.mp4" autoplay loop muted playsinline></video>
                 </div>
             </div>
             <div class="grid-container">
                 <div class="media-box closeup-framed">
-                    <video src="https://shanewilson1-design.github.io/Portfolio/Video/HS_GreenFringe_Closeup-001.mp4" autoplay loop muted playsinline></video>
+                    <video src="HS_GreenFringe_Closeup-001.mp4" autoplay loop muted playsinline></video>
                 </div>
                 <div class="media-box">
-                    <video src="https://shanewilson1-design.github.io/Portfolio/HS_GreenFringe_Full-002.mp4" autoplay loop muted playsinline></video>
+                    <video src="HS_GreenFringe_Full-002.mp4" autoplay loop muted playsinline></video>
                 </div>
             </div>
         </section>
@@ -389,10 +389,10 @@
         <section id="char2" class="section">
             <div class="grid-container">
                 <div class="media-box closeup-framed">
-                    <video src="Video/HS_Mirror_Closeup-001.mp4" autoplay loop muted playsinline></video>
+                    <video src="HS_Mirror_Closeup-001.mp4" autoplay loop muted playsinline></video>
                 </div>
                 <div class="media-box">
-                    <video src="Video/HS_Mirror_Full-001.mp4" autoplay loop muted playsinline></video>
+                    <video src="HS_Mirror_Full-001.mp4" autoplay loop muted playsinline></video>
                 </div>
             </div>
         </section>
@@ -401,10 +401,10 @@
         <section id="char3" class="section">
             <div class="grid-container">
                 <div class="media-box">
-                    <video src="Video/HS_GreenFringe_Full-001.mp4" autoplay loop muted playsinline></video>
+                    <video src="HS_GreenFringe_Full-001.mp4" autoplay loop muted playsinline></video>
                 </div>
                 <div class="media-box closeup-framed">
-                    <video src="Video/HS_SilverFringe_Closeup-001.mp4" autoplay loop muted playsinline></video>
+                    <video src="HS_SilverFringe_Closeup-001.mp4" autoplay loop muted playsinline></video>
                 </div>
             </div>
         </section>
@@ -423,6 +423,19 @@
                 popup.classList.remove('active');
             }
         }
+
+        // Security: Block right-click context menus on media items and prevent dragging
+        document.addEventListener('contextmenu', function(e) {
+            if (e.target.tagName === 'VIDEO' || e.target.closest('.media-box')) {
+                e.preventDefault();
+            }
+        });
+
+        document.addEventListener('dragstart', function(e) {
+            if (e.target.tagName === 'VIDEO') {
+                e.preventDefault();
+            }
+        });
     </script>
 
 </body>

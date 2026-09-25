@@ -180,7 +180,7 @@
             height: auto;
         }
 
-        /* On desktop, each grid-container is a full 100vh row showing 2 side-by-side items */
+        /* Desktop Grid Rows: 2 side-by-side, each row snaps independently */
         .grid-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -222,7 +222,7 @@
             }
         }
 
-        /* Mobile Viewport Adaptations: Unpacks rows into sequential individual full-screen items */
+        /* Mobile Viewport Adaptations: Unpacks grids into a pure single-file vertical stack */
         @media (max-width: 768px) {
             html, body {
                 height: 100vh;
@@ -285,15 +285,16 @@
                 display: block;
             }
 
+            /* Disable grid layout on mobile, turning containers into normal wrappers */
             .grid-container {
-                display: flex;
-                flex-direction: column;
+                display: block;
                 width: 100vw;
                 height: auto;
                 scroll-snap-align: none;
                 scroll-snap-stop: normal;
             }
 
+            /* Every single media box becomes its own standalone full-screen stacked card */
             .media-box, 
             .media-box.closeup-framed {
                 padding: 0;
@@ -343,7 +344,7 @@
     <!-- Main Portfolio Content -->
     <main class="main-content">
 
-        <!-- Green Fringe Section (Two scrolling rows of 2 videos each) -->
+        <!-- Green Fringe Section (Two rows of 2 side-by-side videos on desktop, stacked individually on mobile) -->
         <section id="char1" class="section">
             <div class="grid-container">
                 <div class="media-box">

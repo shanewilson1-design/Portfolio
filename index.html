@@ -180,6 +180,7 @@
             height: auto;
         }
 
+        /* On desktop, each grid-container is a full 100vh row showing 2 side-by-side items */
         .grid-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -221,7 +222,7 @@
             }
         }
 
-        /* Mobile Viewport Adaptations */
+        /* Mobile Viewport Adaptations: Unpacks rows into sequential individual full-screen items */
         @media (max-width: 768px) {
             html, body {
                 height: 100vh;
@@ -288,10 +289,9 @@
                 display: flex;
                 flex-direction: column;
                 width: 100vw;
-                height: 100vh;
-                height: 100dvh;
-                scroll-snap-align: start;
-                scroll-snap-stop: always;
+                height: auto;
+                scroll-snap-align: none;
+                scroll-snap-stop: normal;
             }
 
             .media-box, 
@@ -300,6 +300,8 @@
                 width: 100vw;
                 height: 100vh;
                 height: 100dvh;
+                scroll-snap-align: start;
+                scroll-snap-stop: always;
                 flex-shrink: 0;
             }
 
@@ -341,7 +343,7 @@
     <!-- Main Portfolio Content -->
     <main class="main-content">
 
-        <!-- Green Fringe Section -->
+        <!-- Green Fringe Section (Two scrolling rows of 2 videos each) -->
         <section id="char1" class="section">
             <div class="grid-container">
                 <div class="media-box">

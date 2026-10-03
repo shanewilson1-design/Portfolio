@@ -598,14 +598,15 @@
                 height: 100%;
             }
             
-            /* MOBILE SNAP FIX: Disable snap on the wrapper row and snap cleanly box-by-box */
+            /* MOBILE IMAGE-BY-IMAGE SNAP CONFIG */
             .detail-view-container:not(.light-mode) .project-row {
-                flex-direction: column !important;
-                height: auto !important;
-                min-height: 100%;
-                flex: 0 0 auto !important;
-                scroll-snap-align: none !important;
-                scroll-snap-stop: normal !important;
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                width: 100vw;
+                height: auto;
+                flex: none;
+                scroll-snap-align: none;
             }
             .project-media-box, .project-media-box.framed {
                 width: 100vw;
@@ -615,8 +616,7 @@
                 scroll-snap-align: start !important;
                 scroll-snap-stop: always !important;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-                flex: 0 0 calc(100vh - 60px) !important;
-                flex: 0 0 calc(100dvh - 60px) !important;
+                flex: none !important;
             }
             
             .detail-view-container.light-mode {

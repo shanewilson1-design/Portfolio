@@ -260,7 +260,7 @@
         .project-floating-header {
             position: fixed;
             top: 30px;
-            left: 100px; /* 60px sidebar + 40px spacing */
+            left: 100px;
             z-index: 200;
             background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(10px);
@@ -598,20 +598,22 @@
                 height: 100%;
             }
             
-            /* MOBILE FIX: Stack multi-column project rows vertically so all items remain visible and scrollable */
+            /* MOBILE SNAP FIX: Disable snap on the wrapper row and snap cleanly box-by-box */
             .detail-view-container:not(.light-mode) .project-row {
                 flex-direction: column !important;
                 height: auto !important;
                 min-height: 100%;
                 flex: 0 0 auto !important;
+                scroll-snap-align: none !important;
+                scroll-snap-stop: normal !important;
             }
             .project-media-box, .project-media-box.framed {
                 width: 100vw;
                 height: calc(100vh - 60px);
                 height: calc(100dvh - 60px);
                 padding: 0;
-                scroll-snap-align: start;
-                scroll-snap-stop: always;
+                scroll-snap-align: start !important;
+                scroll-snap-stop: always !important;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.08);
                 flex: 0 0 calc(100vh - 60px) !important;
                 flex: 0 0 calc(100dvh - 60px) !important;

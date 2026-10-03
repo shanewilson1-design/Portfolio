@@ -274,7 +274,7 @@
         .project-floating-header h2 {
             font-size: 0.8rem;
             letter-spacing: 1.5px;
-            text-transform: uppercase; /* Uppercase project title */
+            text-transform: uppercase;
             margin: 0;
             font-weight: 600;
             white-space: nowrap;
@@ -291,7 +291,6 @@
             transition: all 0.3s ease;
             line-height: 1.35;
         }
-        /* Only expand on hover if subtitle actually has content */
         .project-floating-header.has-subtitle:hover .project-floating-subtitle {
             max-height: 120px;
             opacity: 1;
@@ -333,10 +332,9 @@
             transform: scale(1.05);
         }
 
-        /* PAGE ANNOTATIONS (BOTTOM LABELS) */
+        /* PAGE ANNOTATIONS (BOTTOM/TOP LABELS) */
         .page-annotation {
             position: absolute;
-            bottom: 30px;
             z-index: 100;
             background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(10px);
@@ -349,13 +347,15 @@
             width: 280px;
             transition: all 0.3s ease;
         }
+        .page-annotation.align-top { top: 25px; bottom: auto; }
+        .page-annotation.align-bottom { bottom: 25px; top: auto; }
         .page-annotation.align-left { left: 40px; }
         .page-annotation.align-right { right: 40px; }
         
         .annotation-title {
             font-size: 0.78rem;
             letter-spacing: 1.5px;
-            text-transform: uppercase; /* Uppercase page title */
+            text-transform: uppercase;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -373,7 +373,6 @@
             letter-spacing: 0.3px;
         }
 
-        /* Only expand on hover if description actually exists */
         .page-annotation.has-desc:hover {
             width: 440px;
         }
@@ -441,6 +440,15 @@
             scroll-snap-align: start;
             scroll-snap-stop: always;
         }
+
+        /* DESKTOP TOP/BOTTOM PADDING SPECIFICALLY FOR SHOW ILLUSTRATIONS */
+        @media (min-width: 769px) {
+            .detail-view-container.light-mode .grid-page {
+                padding-top: 75px;
+                padding-bottom: 75px;
+            }
+        }
+
         .detail-view-container.light-mode .project-row {
             display: flex;
             width: 100%;
@@ -644,6 +652,7 @@
                 min-height: 100% !important;
                 scroll-snap-align: none !important;
                 align-content: flex-start;
+                padding: 0 !important;
             }
             .detail-view-container.light-mode .project-row { display: contents !important; }
             .detail-view-container.light-mode .project-media-box:not(.mobile-feature) { display: none !important; }
@@ -961,8 +970,9 @@
                 lightBg: true, 
                 pages: [
                     {
-                        pageTitle: "Show Illustrations — Gucci Mens Spring 2025",
-                        titleAlign: "left",
+                        pageTitle: "Gucci Mens Spring 2025",
+                        titleAlign: "right",
+                        position: "bottom",
                         rows: [
                             {
                                 expandable: true,
@@ -1031,8 +1041,9 @@
                         ]
                     },
                     {
-                        pageTitle: "Show Illustrations — Gucci Womens Spring 2025",
+                        pageTitle: "Gucci Womens Spring 2025",
                         titleAlign: "right",
+                        position: "bottom",
                         rows: [
                             {
                                 expandable: true,
@@ -1318,6 +1329,7 @@
                         let chunk = mobileItems.slice(i, i + 4);
                         chunkedPages.push({
                             titleAlign: 'left',
+                            position: 'bottom',
                             rows: [
                                 { expandable: false, cols: chunk.slice(0, 2) },
                                 { expandable: false, cols: chunk.slice(2, 4) }
@@ -1334,7 +1346,8 @@
 
                         if (page.pageTitle) {
                             const annotation = document.createElement('div');
-                            annotation.className = `page-annotation ${page.titleAlign === 'right' ? 'align-right' : 'align-left'}`;
+                            const posClass = page.position === 'top' ? 'align-top' : 'align-bottom';
+                            annotation.className = `page-annotation ${posClass} ${page.titleAlign === 'right' ? 'align-right' : 'align-left'}`;
                             if (page.pageDescription && page.pageDescription.trim() !== '') {
                                 annotation.classList.add('has-desc');
                             }
@@ -1376,7 +1389,7 @@
 
                         if (rowObj.pageTitle) {
                             const annotation = document.createElement('div');
-                            annotation.className = `page-annotation ${rowObj.titleAlign === 'right' ? 'align-right' : 'align-left'}`;
+                            annotation.className = `page-annotation align-bottom ${rowObj.titleAlign === 'right' ? 'align-right' : 'align-left'}`;
                             if (rowObj.pageDescription && rowObj.pageDescription.trim() !== '') {
                                 annotation.classList.add('has-desc');
                             }

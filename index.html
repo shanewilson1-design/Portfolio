@@ -340,7 +340,7 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 10px 20px;
             color: #fff;
-            pointer-events: auto; /* Allows hover */
+            pointer-events: auto;
             display: flex;
             align-items: center;
             gap: 0; 
@@ -368,7 +368,6 @@
             text-transform: uppercase;
         }
 
-        /* Hover expansion for descriptions */
         .page-annotation:hover .annotation-desc {
             max-width: 400px;
             opacity: 1;
@@ -598,19 +597,24 @@
             .detail-view-container {
                 height: 100%;
             }
+            
+            /* MOBILE FIX: Stack multi-column project rows vertically so all items remain visible and scrollable */
             .detail-view-container:not(.light-mode) .project-row {
-                flex-direction: column;
-                height: 100%;
-                flex: 0 0 100%;
+                flex-direction: column !important;
+                height: auto !important;
+                min-height: 100%;
+                flex: 0 0 auto !important;
             }
             .project-media-box, .project-media-box.framed {
                 width: 100vw;
-                height: 100%;
+                height: calc(100vh - 60px);
+                height: calc(100dvh - 60px);
                 padding: 0;
                 scroll-snap-align: start;
                 scroll-snap-stop: always;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-                flex: 0 0 100% !important;
+                flex: 0 0 calc(100vh - 60px) !important;
+                flex: 0 0 calc(100dvh - 60px) !important;
             }
             
             .detail-view-container.light-mode {
@@ -694,7 +698,7 @@
 
         <!-- VIEW 2: Project Detail View -->
         <section id="detailView" class="view">
-            <!-- New Floating Header -->
+            <!-- Floating Header -->
             <div id="projectFloatingHeader" class="project-floating-header">
                 <h2 id="floatingTitle"></h2>
                 <div id="floatingSubtitle" class="project-floating-subtitle"></div>
@@ -813,7 +817,6 @@
                             { src: "Comogonie-StarryNight-005.3.png", isVideo: false, framed: false }
                         ],
                         pageTitle: "GUCCI CRUISE 2023",
-                        pageDescription: "Allover botanical embroidery placements.",
                         titleAlign: "right"
                     },
                     {
@@ -1274,7 +1277,6 @@
                 
                 let activePages = project.pages;
                 
-                // Mobile layout generation for light-mode grid
                 if (project.lightBg && window.innerWidth <= 768) {
                     let mobileItems = [];
                     project.pages.forEach(p => {
@@ -1289,7 +1291,6 @@
                     for (let i = 0; i < mobileItems.length; i += 4) {
                         let chunk = mobileItems.slice(i, i + 4);
                         chunkedPages.push({
-                            // Deliberately empty so 'PAGE X' is not generated on mobile
                             titleAlign: 'left',
                             rows: [
                                 { expandable: false, cols: chunk.slice(0, 2) },

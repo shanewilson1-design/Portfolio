@@ -17,7 +17,7 @@
         html, body {
             width: 100vw;
             height: 100vh;
-            overflow: hidden;
+            overflow: hidden; /* Strictly locks the page to prevent "black bar" rubber-banding */
             background-color: #0b0b0b;
             color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -116,7 +116,7 @@
         .view {
             display: none;
             width: 100%;
-            height: 100vh;
+            height: 100%;
             position: absolute;
             top: 0;
             left: 0;
@@ -127,13 +127,13 @@
         }
 
         .view.splash-view {
-            height: 100vh;
+            height: 100%;
             overflow: hidden;
         }
 
         .splash-container {
             width: 100%;
-            height: 100vh;
+            height: 100%;
             position: relative;
             cursor: pointer;
             overflow: hidden;
@@ -151,8 +151,7 @@
         .editorial-strip-container {
             display: flex;
             width: 100%;
-            height: 100vh;
-            height: 100dvh;
+            height: 100%;
             overflow-x: auto;
             overflow-y: hidden;
             background: #0b0b0b;
@@ -167,8 +166,7 @@
 
         .editorial-strip {
             flex: 0 0 320px;
-            height: 100vh;
-            height: 100dvh;
+            height: 100%;
             position: relative;
             cursor: pointer;
             overflow: hidden;
@@ -188,14 +186,14 @@
             height: 100%;
             object-fit: cover;
             display: block;
-            transform: scale(1.03); 
+            transform: scale(1.05); /* Aggressive crop to hide export padding */
             transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         @media (min-width: 769px) {
             .editorial-strip:hover video,
             .editorial-strip:hover img {
-                transform: scale(1.05);
+                transform: scale(1.07);
             }
         }
 
@@ -247,7 +245,7 @@
         /* Detail Views */
         .detail-view-container {
             width: 100%;
-            height: 100vh;
+            height: 100%;
             overflow-y: auto;
             overflow-x: hidden;
             background: #000;
@@ -261,8 +259,7 @@
         .sawtooth-view-container {
             display: flex;
             width: 100%;
-            height: 100vh;
-            height: 100dvh;
+            height: 100%;
             overflow-x: auto;
             overflow-y: hidden;
             background: #000;
@@ -275,8 +272,7 @@
 
         .sawtooth-column {
             flex: 0 0 25vw;
-            height: 100vh;
-            height: 100dvh;
+            height: 100%;
             position: relative;
             overflow: hidden;
             background: #000;
@@ -292,7 +288,7 @@
             height: 100%;
             object-fit: cover;
             display: block;
-            transform: scale(1.03);
+            transform: scale(1.05);
         }
 
         .page-annotation {
@@ -321,10 +317,8 @@
         .detail-view-container:not(.light-mode) .project-row {
             display: flex;
             width: 100%;
-            height: 100vh;
-            height: 100dvh;
-            flex: 0 0 100vh;
-            flex: 0 0 100dvh;
+            height: 100%;
+            flex: 0 0 100%;
             background: #000;
             position: relative;
             scroll-snap-align: start;
@@ -353,14 +347,14 @@
             height: 100%;
             object-fit: cover;
             display: block;
-            transform: scale(1.03);
+            transform: scale(1.05);
             transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         /* Light Mode */
         .detail-view-container.light-mode {
             background: #ffffff;
-            height: 100vh;
+            height: 100%;
             overflow-y: auto;
             display: block;
             scroll-snap-type: y mandatory;
@@ -369,7 +363,7 @@
             display: flex;
             flex-direction: column;
             width: 100%;
-            height: 100vh;
+            height: 100%;
             position: relative;
             scroll-snap-align: start;
             scroll-snap-stop: always;
@@ -406,8 +400,7 @@
         /* Contact View Styles */
         .contact-container {
             width: 100%;
-            height: 100vh;
-            height: 100dvh;
+            height: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -439,8 +432,7 @@
             html, body {
                 width: 100vw;
                 height: 100%;
-                overflow-x: hidden;
-                overflow-y: auto;
+                overflow: hidden !important; /* Fixes the black gap rubber-banding */
             }
             .sidebar {
                 position: fixed;
@@ -448,36 +440,52 @@
                 left: 0;
                 width: 100vw;
                 height: 60px;
+                display: flex;
                 flex-direction: row;
+                align-items: center;
+                justify-content: flex-start;
                 padding: 0 20px;
                 border-right: none;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.08);
                 z-index: 2000;
                 background-color: rgba(10, 10, 10, 0.98);
-                /* Allow horizontal scrolling to prevent cutoff */
+                /* Scrolling setup for small screens */
                 overflow-x: auto;
-                -ms-overflow-style: none;
-                scrollbar-width: none;
-                flex-wrap: nowrap;
+                -webkit-overflow-scrolling: touch;
+                white-space: nowrap;
             }
             .sidebar::-webkit-scrollbar {
                 display: none;
             }
+            
             .sidebar-brand {
+                writing-mode: horizontal-tb !important; /* Force right side up */
+                transform: none !important; /* Removes the 180 flip */
+                margin-right: 25px; /* Added spacing from ALL */
                 flex-shrink: 0;
-                margin-right: 20px;
             }
+            .sidebar-brand span {
+                writing-mode: horizontal-tb !important;
+                transform: none !important;
+                font-size: 0.75rem;
+            }
+            
             .sidebar-nav-stack {
+                display: flex;
                 flex-direction: row;
-                gap: 15px;
+                align-items: center;
+                gap: 20px; /* Space between nav items */
                 flex-shrink: 0;
             }
-            .nav-text, .sidebar-brand span {
-                writing-mode: horizontal-tb;
-                transform: none;
-                font-size: 0.65rem; /* Reduced to fit better */
-                letter-spacing: 1.5px;
+            .nav-item {
+                flex-shrink: 0;
             }
+            .nav-text {
+                writing-mode: horizontal-tb !important;
+                transform: none !important;
+                font-size: 0.75rem;
+            }
+
             .main-content {
                 margin-left: 0;
                 margin-top: 60px;
@@ -485,12 +493,13 @@
                 height: calc(100vh - 60px);
                 height: calc(100dvh - 60px);
                 position: relative;
-                overflow-y: auto;
+                overflow: hidden; /* Locks out any rogue layout jumps */
             }
+            
+            /* Inheritance fixes the 100vh calculation gap permanently */
             .view, .view.splash-view, .splash-container {
                 width: 100vw;
-                height: calc(100vh - 60px);
-                height: calc(100dvh - 60px);
+                height: 100%;
                 position: absolute;
                 top: 0;
                 left: 0;
@@ -504,11 +513,9 @@
                 scroll-snap-type: y mandatory;
             }
             .editorial-strip, .sawtooth-column {
-                flex: 0 0 calc(100vh - 60px);
-                flex: 0 0 calc(100dvh - 60px);
+                flex: 0 0 100%;
                 width: 100vw;
-                height: calc(100vh - 60px);
-                height: calc(100dvh - 60px);
+                height: 100%;
                 scroll-snap-align: start;
                 scroll-snap-stop: always;
                 border-right: none;
@@ -522,28 +529,29 @@
                 bottom: 0;
             }
             
+            .detail-view-container {
+                height: 100%;
+            }
             .detail-view-container:not(.light-mode) .project-row {
                 flex-direction: column;
-                height: auto;
+                height: 100%;
+                flex: 0 0 100%;
             }
             .project-media-box, .project-media-box.framed {
                 width: 100vw;
-                height: calc(100vh - 60px);
-                height: calc(100dvh - 60px);
+                height: 100%;
                 padding: 0;
                 scroll-snap-align: start;
                 scroll-snap-stop: always;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-                flex: 0 0 calc(100vh - 60px) !important;
-                flex: 0 0 calc(100dvh - 60px) !important;
+                flex: 0 0 100% !important;
             }
             
             .detail-view-container.light-mode {
                 overflow-y: auto !important;
                 scroll-snap-type: none !important;
                 display: block;
-                height: calc(100vh - 60px);
-                height: calc(100dvh - 60px);
+                height: 100% !important;
             }
             .detail-view-container.light-mode .grid-page {
                 display: flex !important;
@@ -551,8 +559,9 @@
                 flex-wrap: wrap !important;
                 width: 100vw !important;
                 height: auto !important;
-                min-height: calc(100vh - 60px);
+                min-height: 100% !important;
                 scroll-snap-align: none !important;
+                align-content: flex-start;
             }
             .detail-view-container.light-mode .project-row { display: contents !important; }
             .detail-view-container.light-mode .project-media-box:not(.mobile-feature) { display: none !important; }
@@ -564,8 +573,6 @@
                 scroll-snap-align: none !important;
                 padding: 10px !important;
             }
-            .detail-view-container.light-mode .project-media-box:hover { transform: none !important; }
-            .detail-view-container.light-mode .project-media-box img { object-fit: contain !important; }
 
             .page-annotation {
                 bottom: 20px;
@@ -575,10 +582,6 @@
             .page-annotation.align-left { left: 20px; }
             .page-annotation.align-right { right: 20px; }
             
-            .contact-container {
-                height: calc(100vh - 60px);
-                height: calc(100dvh - 60px);
-            }
             .contact-container a { font-size: 1.3rem; }
         }
     </style>
@@ -586,7 +589,7 @@
 <body>
 
     <aside class="sidebar">
-        <!-- Brand acts as ALL -->
+        <!-- Brand directly functions as ALL -->
         <div class="sidebar-brand active" onclick="filterStrips('all', this)">
             <span>SHANE WILSON</span>
         </div>
@@ -601,7 +604,6 @@
             <div class="nav-item" onclick="filterStrips('3d', this)">
                 <span class="nav-text">3D</span>
             </div>
-            <!-- Contact Link -->
             <div class="nav-item" onclick="openContact(this)">
                 <span class="nav-text">@</span>
             </div>
@@ -630,7 +632,6 @@
         <section id="contactView" class="view">
             <div class="contact-container">
                 <p>Get in touch</p>
-                <!-- Update email address here as needed -->
                 <a href="mailto:hello@shanewilson.com">hello@shanewilson.com</a>
             </div>
         </section>
@@ -650,7 +651,7 @@
                         expandable: false,
                         cols: [
                             { src: "LoveOnTour/HS_SilverFringe_Full.mp4", isVideo: true, framed: false },
-                            { src: "LoveOnTour/HS_SilverFringe_closeup.mp4", isVideo: true, framed: true }
+                            { src: "LoveOnTour/HS_SilverFringe_Closeup.mp4", isVideo: true, framed: true }
                         ],
                         pageTitle: "GRAMMYS PERFORMANCE 2023",
                         titleAlign: "left"
@@ -1147,7 +1148,6 @@
         function filterStrips(category, element) {
             switchView('projectsView');
 
-            // Remove active class from all nav items AND the brand
             document.querySelectorAll('.nav-item, .sidebar-brand').forEach(item => item.classList.remove('active'));
             if(element) element.classList.add('active');
 

@@ -229,7 +229,7 @@
 
         .strip-caption h3 {
             font-size: 1.05rem;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             text-transform: uppercase;
             color: #fff;
             margin-bottom: 6px;
@@ -237,8 +237,7 @@
 
         .strip-caption p {
             font-size: 0.75rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+            letter-spacing: 0.5px;
             color: #888;
         }
 
@@ -270,27 +269,31 @@
             display: flex;
             flex-direction: column;
             pointer-events: auto;
+            width: 320px;
         }
         .project-floating-header h2 {
-            font-size: 0.75rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase; /* Uppercase project title */
             margin: 0;
             font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .project-floating-subtitle {
-            font-size: 0.65rem;
-            letter-spacing: 1px;
+            font-size: 0.72rem;
+            letter-spacing: 0.3px;
             color: #aaa;
             max-height: 0;
             opacity: 0;
             overflow: hidden;
             transition: all 0.3s ease;
-            text-transform: uppercase;
-            white-space: nowrap;
+            line-height: 1.35;
         }
-        .project-floating-header:hover .project-floating-subtitle {
-            max-height: 50px;
+        /* Only expand on hover if subtitle actually has content */
+        .project-floating-header.has-subtitle:hover .project-floating-subtitle {
+            max-height: 120px;
             opacity: 1;
             margin-top: 8px;
         }
@@ -343,17 +346,20 @@
             pointer-events: auto;
             display: flex;
             align-items: center;
-            gap: 0; 
+            width: 280px;
             transition: all 0.3s ease;
         }
         .page-annotation.align-left { left: 40px; }
         .page-annotation.align-right { right: 40px; }
         
         .annotation-title {
-            font-size: 0.75rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
+            font-size: 0.78rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase; /* Uppercase page title */
             white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex-shrink: 0;
         }
         
         .annotation-desc {
@@ -363,17 +369,22 @@
             white-space: nowrap;
             transition: all 0.4s ease;
             color: #aaa;
-            font-size: 0.65rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.3px;
         }
 
-        .page-annotation:hover .annotation-desc {
-            max-width: 400px;
+        /* Only expand on hover if description actually exists */
+        .page-annotation.has-desc:hover {
+            width: 440px;
+        }
+
+        .page-annotation.has-desc:hover .annotation-desc {
+            max-width: 260px;
             opacity: 1;
             margin-left: 12px;
             padding-left: 12px;
             border-left: 1px solid rgba(255, 255, 255, 0.2);
+            white-space: normal;
         }
 
         .detail-view-container:not(.light-mode) .project-row {
@@ -472,15 +483,14 @@
         .contact-container p {
             color: #888;
             font-size: 0.75rem;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             margin-bottom: 15px;
-            text-transform: uppercase;
         }
         .contact-container a {
             color: #38bdf8;
             text-decoration: none;
             font-size: 1.8rem;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             font-family: "Didot", "Bodoni MT", "Times New Roman", Times, serif;
             font-style: italic;
             transition: opacity 0.3s ease;
@@ -565,9 +575,10 @@
             }
             
             .project-floating-header {
-                top: 80px; 
-                left: 20px;
-                padding: 8px 16px;
+                top: 75px; 
+                left: 15px;
+                width: 240px;
+                padding: 8px 14px;
             }
             
             .editorial-strip-container, .sawtooth-view-container {
@@ -598,7 +609,6 @@
                 height: 100%;
             }
             
-            /* MOBILE IMAGE-BY-IMAGE SNAP CONFIG */
             .detail-view-container:not(.light-mode) .project-row {
                 position: relative;
                 display: flex;
@@ -648,12 +658,17 @@
 
             .page-annotation {
                 bottom: 20px;
+                width: 220px;
                 padding: 6px 12px;
             }
-            .page-annotation.align-left { left: 20px; }
-            .page-annotation.align-right { right: 20px; }
-            .page-annotation:hover .annotation-desc {
-                max-width: 250px;
+            .page-annotation.align-left { left: 15px; }
+            .page-annotation.align-right { right: 15px; }
+            
+            .page-annotation.has-desc:hover {
+                width: 300px;
+            }
+            .page-annotation.has-desc:hover .annotation-desc {
+                max-width: 180px;
                 white-space: normal; 
             }
             
@@ -666,15 +681,15 @@
     <aside class="sidebar">
         <!-- Brand directly functions as ALL -->
         <div class="sidebar-brand active" onclick="filterStrips('all', this)">
-            <span>SHANE WILSON</span>
+            <span>Shane Wilson</span>
         </div>
         
         <div class="sidebar-nav-stack">
             <div class="nav-item" onclick="filterStrips('graphics', this)">
-                <span class="nav-text">GRAPHICS</span>
+                <span class="nav-text">Graphics</span>
             </div>
             <div class="nav-item" onclick="filterStrips('fashion', this)">
-                <span class="nav-text">FASHION</span>
+                <span class="nav-text">Fashion</span>
             </div>
             <div class="nav-item" onclick="filterStrips('3d', this)">
                 <span class="nav-text">3D</span>
@@ -722,7 +737,7 @@
             {
                 id: 'tour',
                 title: 'Love on Tour',
-                subtitle: 'Fashion & 3D Motion',
+                subtitle: 'A selection of final 3D renders from Harry Styles\' Love on Tour, featuring hyper-realistic looks, developed from precise pattern placements, and accurate embroidery details.',
                 categories: ['fashion', '3d'],
                 thumbSrc: 'LoveOnTour/HS_SilverFringe_Full.mp4',
                 thumbIsVideo: true,
@@ -733,7 +748,7 @@
                             { src: "LoveOnTour/HS_SilverFringe_Full.mp4", isVideo: true, framed: false },
                             { src: "LoveOnTour/HS_SilverFringe_closeup.mp4", isVideo: true, framed: true }
                         ],
-                        pageTitle: "GRAMMYS PERFORMANCE 2023",
+                        pageTitle: "Grammys Performance 2023",
                         titleAlign: "left"
                     },
                     {
@@ -742,7 +757,7 @@
                             { src: "LoveOnTour/HS_Thermostrass_Closeup.mp4", isVideo: true, framed: true },
                             { src: "LoveOnTour/HS_Thermostrass_Full.mp4", isVideo: true, framed: false }
                         ],
-                        pageTitle: "PALM SPRINGS 2023",
+                        pageTitle: "Palm Springs 2023",
                         titleAlign: "right"
                     },
                     {
@@ -751,7 +766,7 @@
                             { src: "LoveOnTour/HS_Hearts_Full.mp4", isVideo: true, framed: false },
                             { src: "LoveOnTour/HS_Hearts_Closeup.mp4", isVideo: true, framed: true }
                         ],
-                        pageTitle: "LONDON 2023",
+                        pageTitle: "London 2023",
                         titleAlign: "left"
                     },
                     {
@@ -760,7 +775,7 @@
                             { src: "LoveOnTour/HS_GreenFringe_Closeup.mp4", isVideo: true, framed: true },
                             { src: "LoveOnTour/HS_GreenFringe_Full.mp4", isVideo: true, framed: false }
                         ],
-                        pageTitle: "VIENNA 2023",
+                        pageTitle: "Vienna 2023",
                         titleAlign: "right"
                     },
                     {
@@ -769,7 +784,7 @@
                             { src: "LoveOnTour/HS_Mirror_Full.mp4", isVideo: true, framed: false },
                             { src: "LoveOnTour/HS_Mirror_Closeup.mp4", isVideo: true, framed: true }
                         ],
-                        pageTitle: "LISBON 2023",
+                        pageTitle: "Lisbon 2023",
                         titleAlign: "left"
                     },
                 ]
@@ -808,7 +823,7 @@
                             { src: "Comogonie-StarryNight-001.png", isVideo: false, framed: false },
                             { src: "Comogonie-StarryNight-004.png", isVideo: false, framed: true }
                         ],
-                        pageTitle: "GUCCI CRUISE 2023",
+                        pageTitle: "Gucci Cruise 2023",
                         pageDescription: "Allover botanical embroidery placements.",
                         titleAlign: "left"
                     },
@@ -818,7 +833,7 @@
                             { src: "Comogonie-StarryNight-008.3.png", isVideo: false, framed: true },
                             { src: "Comogonie-StarryNight-005.3.png", isVideo: false, framed: false }
                         ],
-                        pageTitle: "GUCCI CRUISE 2023",
+                        pageTitle: "Gucci Cruise 2023",
                         titleAlign: "right"
                     },
                     {
@@ -827,7 +842,7 @@
                             { src: "SS25-Mirror-001.png", isVideo: false, framed: false },
                             { src: "SS25-Mirror-002.png", isVideo: false, framed: true }
                         ],
-                        pageTitle: "GUCCI SPRING SUMMER 2025",
+                        pageTitle: "Gucci Spring Summer 2025",
                         titleAlign: "left"
                     },
                     {
@@ -836,7 +851,7 @@
                             { src: "CR_BlackLace-002.png", isVideo: false, framed: true },
                             { src: "CR_BlackLace-001.png", isVideo: false, framed: false }
                         ],
-                        pageTitle: "GUCCI CRUISE 2026",
+                        pageTitle: "Gucci Cruise 2026",
                         titleAlign: "right"
                     },
                     {
@@ -845,7 +860,7 @@
                             { src: "CR_BlackLace-001.png", isVideo: false, framed: false },
                             { src: "CR_BlackLace-002.png", isVideo: false, framed: true }
                         ],
-                        pageTitle: "GUCCI CRUISE 2026",
+                        pageTitle: "Gucci Cruise 2026",
                         titleAlign: "left"
                     }
                 ]
@@ -866,7 +881,7 @@
                             { src: "Untitled-1 2.jpg", isVideo: false, framed: false },
                             { src: "ChannelYellow-03.jpg", isVideo: false, framed: false }
                         ],
-                        pageTitle: "GUCCI CRUISE 2023",
+                        pageTitle: "Gucci Cruise 2023",
                         titleAlign: "left"
                     },
                 ]
@@ -946,7 +961,7 @@
                 lightBg: true, 
                 pages: [
                     {
-                        pageTitle: "SHOW ILLUSTRATIONS — GUCCI MENS SPRING 2025",
+                        pageTitle: "Show Illustrations — Gucci Mens Spring 2025",
                         titleAlign: "left",
                         rows: [
                             {
@@ -1016,7 +1031,7 @@
                         ]
                     },
                     {
-                        pageTitle: "SHOW ILLUSTRATIONS — GUCCI WOMENS SPRING 2025",
+                        pageTitle: "Show Illustrations — Gucci Womens Spring 2025",
                         titleAlign: "right",
                         rows: [
                             {
@@ -1246,9 +1261,18 @@
             const project = projects.find(p => p.id === projectId) || projects[0];
             activeProject = project;
             
-            // Populate Floating Header
+            // Populate and toggle Floating Header hover state conditionally
             document.getElementById('floatingTitle').innerText = project.title;
-            document.getElementById('floatingSubtitle').innerText = project.subtitle;
+            const subtitleEl = document.getElementById('floatingSubtitle');
+            const headerEl = document.getElementById('projectFloatingHeader');
+
+            if (project.subtitle && project.subtitle.trim() !== '') {
+                subtitleEl.innerText = project.subtitle;
+                headerEl.classList.add('has-subtitle');
+            } else {
+                subtitleEl.innerText = '';
+                headerEl.classList.remove('has-subtitle');
+            }
 
             const container = document.getElementById('detailContainer');
             container.innerHTML = '';
@@ -1311,8 +1335,12 @@
                         if (page.pageTitle) {
                             const annotation = document.createElement('div');
                             annotation.className = `page-annotation ${page.titleAlign === 'right' ? 'align-right' : 'align-left'}`;
+                            if (page.pageDescription && page.pageDescription.trim() !== '') {
+                                annotation.classList.add('has-desc');
+                            }
+                            
                             let innerHTML = `<span class="annotation-title">${page.pageTitle}</span>`;
-                            if (page.pageDescription) {
+                            if (page.pageDescription && page.pageDescription.trim() !== '') {
                                 innerHTML += `<span class="annotation-desc">${page.pageDescription}</span>`;
                             }
                             annotation.innerHTML = innerHTML;
@@ -1349,9 +1377,12 @@
                         if (rowObj.pageTitle) {
                             const annotation = document.createElement('div');
                             annotation.className = `page-annotation ${rowObj.titleAlign === 'right' ? 'align-right' : 'align-left'}`;
+                            if (rowObj.pageDescription && rowObj.pageDescription.trim() !== '') {
+                                annotation.classList.add('has-desc');
+                            }
                             
                             let innerHTML = `<span class="annotation-title">${rowObj.pageTitle}</span>`;
-                            if (rowObj.pageDescription) {
+                            if (rowObj.pageDescription && rowObj.pageDescription.trim() !== '') {
                                 innerHTML += `<span class="annotation-desc">${rowObj.pageDescription}</span>`;
                             }
                             annotation.innerHTML = innerHTML;

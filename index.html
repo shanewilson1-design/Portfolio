@@ -1,4 +1,4 @@
-F<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -11,7 +11,7 @@ F<!DOCTYPE html>
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            border-radius: 0 !important; /* Forces sharp editorial corners everywhere */
+            border-radius: 0 !important;
         }
 
         html, body {
@@ -47,7 +47,7 @@ F<!DOCTYPE html>
             text-orientation: mixed;
             transform: rotate(180deg);
             cursor: pointer;
-            transition: opacity 0.2s ease;
+            transition: opacity 0.2s ease, color 0.2s ease;
         }
 
         .sidebar-brand:hover {
@@ -61,9 +61,13 @@ F<!DOCTYPE html>
             color: #ffffff;
             font-weight: 600;
             white-space: nowrap;
+            transition: color 0.2s ease;
+        }
+        
+        .sidebar-brand.active span {
+            color: #38bdf8;
         }
 
-        /* Combined Stack for Tags */
         .sidebar-nav-stack {
             display: flex;
             flex-direction: column;
@@ -99,7 +103,7 @@ F<!DOCTYPE html>
             color: #38bdf8;
         }
 
-        /* Main Content Layout adjusted for 60px single sidebar */
+        /* Main Content Layout */
         .main-content {
             margin-left: 60px;
             width: calc(100vw - 60px);
@@ -127,7 +131,6 @@ F<!DOCTYPE html>
             overflow: hidden;
         }
 
-        /* VIEW 0: Splash / Home Screen */
         .splash-container {
             width: 100%;
             height: 100vh;
@@ -144,11 +147,12 @@ F<!DOCTYPE html>
             display: block;
         }
 
-        /* VIEW 1: Editorial Full-Height Vertical Strips Layout */
+        /* Editorial Full-Height Vertical Strips */
         .editorial-strip-container {
             display: flex;
             width: 100%;
             height: 100vh;
+            height: 100dvh;
             overflow-x: auto;
             overflow-y: hidden;
             background: #0b0b0b;
@@ -164,15 +168,12 @@ F<!DOCTYPE html>
         .editorial-strip {
             flex: 0 0 320px;
             height: 100vh;
+            height: 100dvh;
             position: relative;
             cursor: pointer;
             overflow: hidden;
             border-right: 1px solid rgba(255, 255, 255, 0.08);
             transition: flex 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .editorial-strip.hide {
-            display: none;
         }
 
         @media (min-width: 769px) {
@@ -184,16 +185,17 @@ F<!DOCTYPE html>
         .editorial-strip video, 
         .editorial-strip img {
             width: 100%;
-            height: 100vh;
+            height: 100%;
             object-fit: cover;
             display: block;
+            transform: scale(1.03); 
             transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         @media (min-width: 769px) {
             .editorial-strip:hover video,
             .editorial-strip:hover img {
-                transform: scale(1.03);
+                transform: scale(1.05);
             }
         }
 
@@ -242,7 +244,7 @@ F<!DOCTYPE html>
             color: #888;
         }
 
-        /* VIEW 2A: Standard Project Detail View (Multi-row Vertical Snap Scroll) */
+        /* Detail Views */
         .detail-view-container {
             width: 100%;
             height: 100vh;
@@ -254,16 +256,13 @@ F<!DOCTYPE html>
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+        .detail-view-container::-webkit-scrollbar { display: none; }
 
-        .detail-view-container::-webkit-scrollbar {
-            display: none;
-        }
-
-        /* VIEW 2B: Sawtooth 4-Column Expanding Horizontal View */
         .sawtooth-view-container {
             display: flex;
             width: 100%;
             height: 100vh;
+            height: 100dvh;
             overflow-x: auto;
             overflow-y: hidden;
             background: #000;
@@ -272,36 +271,30 @@ F<!DOCTYPE html>
             position: relative;
             will-change: scroll-position;
         }
-
-        .sawtooth-view-container::-webkit-scrollbar {
-            display: none;
-        }
+        .sawtooth-view-container::-webkit-scrollbar { display: none; }
 
         .sawtooth-column {
             flex: 0 0 25vw;
             height: 100vh;
+            height: 100dvh;
             position: relative;
             overflow: hidden;
             background: #000;
             border-right: 1px solid rgba(255, 255, 255, 0.08);
             transition: flex 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
-
         @media (min-width: 769px) {
-            .sawtooth-column:hover {
-                flex: 0 0 80vw;
-            }
+            .sawtooth-column:hover { flex: 0 0 80vw; }
         }
-
         .sawtooth-column video,
         .sawtooth-column img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
+            transform: scale(1.03);
         }
 
-        /* PER-PAGE / ROW ANNOTATION BADGE */
         .page-annotation {
             position: absolute;
             bottom: 30px;
@@ -316,24 +309,22 @@ F<!DOCTYPE html>
             color: #fff;
             pointer-events: none;
         }
-        .page-annotation.align-left {
-            left: 40px;
-        }
-        .page-annotation.align-right {
-            right: 40px;
-        }
+        .page-annotation.align-left { left: 40px; }
+        .page-annotation.align-right { right: 40px; }
+        
         .detail-view-container.light-mode .page-annotation {
             background: rgba(255, 255, 255, 0.9);
             color: #000;
             border-color: rgba(0, 0, 0, 0.2);
         }
 
-        /* STANDARD DARK ROW LAYOUTS (Vertical Snap Rows) */
         .detail-view-container:not(.light-mode) .project-row {
             display: flex;
             width: 100%;
             height: 100vh;
+            height: 100dvh;
             flex: 0 0 100vh;
+            flex: 0 0 100dvh;
             background: #000;
             position: relative;
             scroll-snap-align: start;
@@ -352,24 +343,21 @@ F<!DOCTYPE html>
             justify-content: center;
             transition: flex 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
-
         .project-media-box.framed {
             padding: 40px;
             background: #050505;
         }
-
         .project-media-box video,
         .project-media-box img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
+            transform: scale(1.03);
             transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* ============================================================
-           STRICTLY SCOPED LIGHT MODE / SHOW ILLUSTRATIONS OVERRIDES
-           ============================================================ */
+        /* Light Mode */
         .detail-view-container.light-mode {
             background: #ffffff;
             height: 100vh;
@@ -377,8 +365,6 @@ F<!DOCTYPE html>
             display: block;
             scroll-snap-type: y mandatory;
         }
-
-        /* Snap Wrapper for Each 100vh Page of the Grid */
         .grid-page {
             display: flex;
             flex-direction: column;
@@ -388,7 +374,6 @@ F<!DOCTYPE html>
             scroll-snap-align: start;
             scroll-snap-stop: always;
         }
-
         .detail-view-container.light-mode .project-row {
             display: flex;
             width: 100%;
@@ -400,14 +385,12 @@ F<!DOCTYPE html>
             position: relative;
             transition: flex 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
-
         .detail-view-container.light-mode .project-media-box {
             background: #ffffff;
             min-height: 0;
             border-right: none;
             padding: 4px;
         }
-
         .detail-view-container.light-mode .project-media-box img,
         .detail-view-container.light-mode .project-media-box video {
             width: 100%;
@@ -416,10 +399,39 @@ F<!DOCTYPE html>
             max-height: 100%;
             object-fit: contain;
             object-position: center center;
+            transform: none !important;
         }
+        .detail-view-container.light-mode .project-media-box:hover { z-index: 10; }
 
-        .detail-view-container.light-mode .project-media-box:hover {
-            z-index: 10;
+        /* Contact View Styles */
+        .contact-container {
+            width: 100%;
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #0b0b0b;
+        }
+        .contact-container p {
+            color: #888;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        .contact-container a {
+            color: #38bdf8;
+            text-decoration: none;
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+            font-family: "Didot", "Bodoni MT", "Times New Roman", Times, serif;
+            font-style: italic;
+            transition: opacity 0.3s ease;
+        }
+        .contact-container a:hover {
+            opacity: 0.7;
         }
 
         /* Mobile Adaptations */
@@ -442,14 +454,29 @@ F<!DOCTYPE html>
                 border-bottom: 1px solid rgba(255, 255, 255, 0.08);
                 z-index: 2000;
                 background-color: rgba(10, 10, 10, 0.98);
+                /* Allow horizontal scrolling to prevent cutoff */
+                overflow-x: auto;
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+                flex-wrap: nowrap;
+            }
+            .sidebar::-webkit-scrollbar {
+                display: none;
+            }
+            .sidebar-brand {
+                flex-shrink: 0;
+                margin-right: 20px;
             }
             .sidebar-nav-stack {
                 flex-direction: row;
                 gap: 15px;
+                flex-shrink: 0;
             }
-            .nav-text, .sidebar-brand {
+            .nav-text, .sidebar-brand span {
                 writing-mode: horizontal-tb;
                 transform: none;
+                font-size: 0.65rem; /* Reduced to fit better */
+                letter-spacing: 1.5px;
             }
             .main-content {
                 margin-left: 0;
@@ -460,31 +487,23 @@ F<!DOCTYPE html>
                 position: relative;
                 overflow-y: auto;
             }
-            .view {
+            .view, .view.splash-view, .splash-container {
                 width: 100vw;
                 height: calc(100vh - 60px);
                 height: calc(100dvh - 60px);
                 position: absolute;
                 top: 0;
                 left: 0;
-                padding-top: 0;
             }
-            .view.splash-view {
-                height: calc(100vh - 60px);
-                height: calc(100dvh - 60px);
-            }
-            .splash-container {
-                width: 100vw;
-                height: 100%;
-            }
-            .editorial-strip-container {
+            
+            .editorial-strip-container, .sawtooth-view-container {
                 flex-direction: column;
                 height: 100%;
                 overflow-x: hidden;
                 overflow-y: scroll;
                 scroll-snap-type: y mandatory;
             }
-            .editorial-strip {
+            .editorial-strip, .sawtooth-column {
                 flex: 0 0 calc(100vh - 60px);
                 flex: 0 0 calc(100dvh - 60px);
                 width: 100vw;
@@ -495,12 +514,6 @@ F<!DOCTYPE html>
                 border-right: none;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.08);
             }
-            .editorial-strip video, 
-            .editorial-strip img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-            }
             .strip-caption {
                 opacity: 1;
                 transform: translateY(0);
@@ -508,37 +521,12 @@ F<!DOCTYPE html>
                 background: linear-gradient(to top, rgba(0,0,0,0.95) 70%, transparent);
                 bottom: 0;
             }
-            .sawtooth-view-container {
-                flex-direction: column;
-                height: 100%;
-                overflow-x: hidden;
-                overflow-y: scroll;
-                scroll-snap-type: y mandatory;
-            }
-            .sawtooth-column {
-                flex: 0 0 calc(100vh - 60px);
-                flex: 0 0 calc(100dvh - 60px);
-                width: 100vw;
-                height: calc(100vh - 60px);
-                height: calc(100dvh - 60px);
-                scroll-snap-align: start;
-                scroll-snap-stop: always;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            }
-            .sawtooth-column video,
-            .sawtooth-column img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-            }
             
-            /* MOBILE: DEFAULT DARK PROJECTS */
             .detail-view-container:not(.light-mode) .project-row {
                 flex-direction: column;
                 height: auto;
             }
-            .project-media-box,
-            .project-media-box.framed {
+            .project-media-box, .project-media-box.framed {
                 width: 100vw;
                 height: calc(100vh - 60px);
                 height: calc(100dvh - 60px);
@@ -549,14 +537,7 @@ F<!DOCTYPE html>
                 flex: 0 0 calc(100vh - 60px) !important;
                 flex: 0 0 calc(100dvh - 60px) !important;
             }
-            .project-media-box video,
-            .project-media-box img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-            }
             
-            /* MOBILE: LIGHT-MODE OVERRIDES (Smooth free-scroll 4 to a page) */
             .detail-view-container.light-mode {
                 overflow-y: auto !important;
                 scroll-snap-type: none !important;
@@ -564,7 +545,6 @@ F<!DOCTYPE html>
                 height: calc(100vh - 60px);
                 height: calc(100dvh - 60px);
             }
-
             .detail-view-container.light-mode .grid-page {
                 display: flex !important;
                 flex-direction: row !important;
@@ -574,15 +554,8 @@ F<!DOCTYPE html>
                 min-height: calc(100vh - 60px);
                 scroll-snap-align: none !important;
             }
-
-            .detail-view-container.light-mode .project-row {
-                display: contents !important; 
-            }
-
-            .detail-view-container.light-mode .project-media-box:not(.mobile-feature) {
-                display: none !important;
-            }
-
+            .detail-view-container.light-mode .project-row { display: contents !important; }
+            .detail-view-container.light-mode .project-media-box:not(.mobile-feature) { display: none !important; }
             .detail-view-container.light-mode .project-media-box.mobile-feature {
                 width: 50vw !important;
                 flex: 0 0 50vw !important;
@@ -591,41 +564,34 @@ F<!DOCTYPE html>
                 scroll-snap-align: none !important;
                 padding: 10px !important;
             }
-
-            .detail-view-container.light-mode .project-media-box:hover {
-                transform: none !important;
-            }
-
-            .detail-view-container.light-mode .project-media-box img {
-                object-fit: contain !important;
-            }
+            .detail-view-container.light-mode .project-media-box:hover { transform: none !important; }
+            .detail-view-container.light-mode .project-media-box img { object-fit: contain !important; }
 
             .page-annotation {
                 bottom: 20px;
                 padding: 6px 12px;
                 font-size: 0.65rem;
             }
-            .page-annotation.align-left {
-                left: 20px;
+            .page-annotation.align-left { left: 20px; }
+            .page-annotation.align-right { right: 20px; }
+            
+            .contact-container {
+                height: calc(100vh - 60px);
+                height: calc(100dvh - 60px);
             }
-            .page-annotation.align-right {
-                right: 20px;
-            }
+            .contact-container a { font-size: 1.3rem; }
         }
     </style>
 </head>
 <body>
 
-    <!-- UNIFIED SINGLE SIDEBAR -->
     <aside class="sidebar">
-        <div class="sidebar-brand" onclick="switchView('homeView')">
-            <span>Shane Wilson</span>
+        <!-- Brand acts as ALL -->
+        <div class="sidebar-brand active" onclick="filterStrips('all', this)">
+            <span>SHANE WILSON</span>
         </div>
         
         <div class="sidebar-nav-stack">
-            <div class="nav-item active" onclick="filterStrips('all', this)">
-                <span class="nav-text">ALL</span>
-            </div>
             <div class="nav-item" onclick="filterStrips('graphics', this)">
                 <span class="nav-text">GRAPHICS</span>
             </div>
@@ -635,12 +601,14 @@ F<!DOCTYPE html>
             <div class="nav-item" onclick="filterStrips('3d', this)">
                 <span class="nav-text">3D</span>
             </div>
+            <!-- Contact Link -->
+            <div class="nav-item" onclick="openContact(this)">
+                <span class="nav-text">@</span>
+            </div>
         </div>
     </aside>
 
-    <!-- Main Content Container -->
     <main class="main-content">
-
         <!-- VIEW 0: Splash / Home Screen -->
         <section id="homeView" class="view splash-view">
             <div class="splash-container" onclick="switchView('projectsView')">
@@ -658,6 +626,14 @@ F<!DOCTYPE html>
             <div id="detailContainer"></div>
         </section>
 
+        <!-- VIEW 3: Contact -->
+        <section id="contactView" class="view">
+            <div class="contact-container">
+                <p>Get in touch</p>
+                <!-- Update email address here as needed -->
+                <a href="mailto:hello@shanewilson.com">hello@shanewilson.com</a>
+            </div>
+        </section>
     </main>
 
     <script>
@@ -674,7 +650,7 @@ F<!DOCTYPE html>
                         expandable: false,
                         cols: [
                             { src: "LoveOnTour/HS_SilverFringe_Full.mp4", isVideo: true, framed: false },
-                            { src: "LoveOnTour/HS_SilverFringe_Closeup.mp4", isVideo: true, framed: true }
+                            { src: "LoveOnTour/HS_SilverFringe_closeup.mp4", isVideo: true, framed: true }
                         ],
                         pageTitle: "GRAMMYS PERFORMANCE 2023",
                         titleAlign: "left"
@@ -793,14 +769,14 @@ F<!DOCTYPE html>
                 ]
             },
             {
-    id: 'diy',
-    title: 'DIY',
-    subtitle: 'Fashion & 3D Project',
-    categories: ['fashion', '3d'],
-    thumbSrc: 'ChannelGreen-02.png',
-    thumbIsVideo: false,
-    rows: [
-        {
+                id: 'diy',
+                title: 'DIY',
+                subtitle: 'Fashion & 3D Project',
+                categories: ['fashion', '3d'],
+                thumbSrc: 'ChannelGreen-02.png',
+                thumbIsVideo: false,
+                rows: [
+                    {
                         expandable: false,
                         cols: [
                             { src: "Untitled-1 2.jpg", isVideo: false, framed: false },
@@ -811,8 +787,8 @@ F<!DOCTYPE html>
                         pageTitle: "GUCCI CRUISE 2023",
                         titleAlign: "left"
                     },
-    ]
-},
+                ]
+            },
             {
                 id: 'buttons',
                 title: 'Buttons',
@@ -905,7 +881,6 @@ F<!DOCTYPE html>
                                     { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_09_Alrik-001.jpg", isVideo: false },
                                     { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_10_Ayo-001.jpg", isVideo: false },
                                     { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_11_Finn-001.jpg", isVideo: false , mobileFeature: true }
-                                    
                                 ]
                             },
                             {
@@ -922,7 +897,6 @@ F<!DOCTYPE html>
                                     { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_20_Lawrence-001.jpg", isVideo: false },
                                     { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_23_MateoG-001.jpg", isVideo: false , mobileFeature: true },
                                     { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_24_Nicolo-001.jpg", isVideo: false }
-                                
                                 ]
                             },
                             {
@@ -939,7 +913,6 @@ F<!DOCTYPE html>
                                     { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_33_Ann-001.jpg", isVideo: false },
                                     { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_34_MartinM-001.jpg", isVideo: false },
                                     { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_35_Zaram-001.jpg", isVideo: false },
-                                    
                                 ]
                             },
                             {
@@ -956,7 +929,6 @@ F<!DOCTYPE html>
                                     { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_44_Bruno-001.jpg", isVideo: false },
                                     { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_45_Weishuo-001.jpg", isVideo: false , mobileFeature: true },
                                     { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_46_LiCheng-001.jpg", isVideo: false , mobileFeature: true }
-                                    
                                 ]
                             }
                         ]
@@ -1030,7 +1002,7 @@ F<!DOCTYPE html>
                                     { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_45_PENELOPE.jpg", isVideo: false },
                                     { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_46_LEIDY.jpg", isVideo: false },
                                     { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_47_KAROLINA_S.jpg", isVideo: false },
-                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_48_SARA.jpg", isVideo: false},
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_48_SARÀ.jpg", isVideo: false},
                                     { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_49_NIKA.jpg", isVideo: false },
                                     { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_50_APOLLINO.jpg", isVideo: false , mobileFeature: true },
                                     { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_51_ZHANG.jpg", isVideo: false },
@@ -1038,9 +1010,7 @@ F<!DOCTYPE html>
                                     { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_53_ESTELLE.jpg", isVideo: false },
                                     { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_54_STELLA.jpg", isVideo: false }
                                 ]
-                            },
-                            
-                            
+                            }
                         ]
                     }
                 ]
@@ -1177,12 +1147,19 @@ F<!DOCTYPE html>
         function filterStrips(category, element) {
             switchView('projectsView');
 
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            element.classList.add('active');
+            // Remove active class from all nav items AND the brand
+            document.querySelectorAll('.nav-item, .sidebar-brand').forEach(item => item.classList.remove('active'));
+            if(element) element.classList.add('active');
 
             renderEditorialStrips(category);
             const edContainer = document.getElementById('editorialContainer');
             if (edContainer) edContainer.scrollLeft = 0;
+        }
+
+        function openContact(element) {
+            switchView('contactView');
+            document.querySelectorAll('.nav-item, .sidebar-brand').forEach(item => item.classList.remove('active'));
+            if(element) element.classList.add('active');
         }
 
         function openProject(projectId) {

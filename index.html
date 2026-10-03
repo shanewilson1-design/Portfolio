@@ -4,33 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Shane Wilson - Portfolio</title>
+    <!-- GSAP for smooth cinematic transitions -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            border-radius: 0 !important; /* Forces sharp corners everywhere */
+            border-radius: 0 !important; /* Forces sharp editorial corners everywhere */
         }
 
         html, body {
             width: 100vw;
             height: 100vh;
-            overflow-x: hidden;
+            overflow: hidden;
             background-color: #0b0b0b;
             color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            scroll-snap-type: y mandatory;
             scroll-behavior: smooth;
         }
 
-        /* Slim Vertical Sidebar */
+        /* UNIFIED SINGLE SIDEBAR (60px wide) */
         .sidebar {
             position: fixed;
             top: 0;
             left: 0;
             width: 60px;
             height: 100vh;
-            background-color: rgba(12, 12, 12, 0.95);
+            background-color: rgba(10, 10, 10, 0.98);
             backdrop-filter: blur(16px);
             border-right: 1px solid rgba(255, 255, 255, 0.08);
             display: flex;
@@ -39,31 +40,18 @@
             justify-content: space-between;
             padding: 30px 0;
             z-index: 1000;
-            cursor: pointer;
         }
 
-        .sidebar-menu-label {
-            writing-mode: vertical-rl;
-            text-orientation: mixed;
-            transform: rotate(180deg);
-            font-size: 0.9rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            color: #ffffff;
-            font-weight: 600;
-            transition: color 0.2s ease;
-        }
-
-        .sidebar:hover .sidebar-menu-label {
-            color: #ffffff;
-        }
-
-        /* Non-interactive brand text at the bottom - forced pure white */
         .sidebar-brand {
             writing-mode: vertical-rl;
             text-orientation: mixed;
             transform: rotate(180deg);
-            cursor: default;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+
+        .sidebar-brand:hover {
+            opacity: 0.7;
         }
 
         .sidebar-brand span {
@@ -75,164 +63,373 @@
             white-space: nowrap;
         }
 
-        /* Slide-out Menu Overlay & Panel */
-        .menu-popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            display: none;
-            z-index: 3000;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .menu-popup-overlay.active {
-            display: block;
-            opacity: 1;
-        }
-
-        .menu-slide-panel {
-            position: fixed;
-            top: 0;
-            left: 60px;
-            width: 280px;
-            height: 100vh;
-            background: rgba(18, 18, 18, 0.98);
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 40px 30px;
-            box-shadow: 10px 0 30px rgba(0,0,0,0.8);
-            transform: translateX(-100%);
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        /* Combined Stack for Tags */
+        .sidebar-nav-stack {
             display: flex;
             flex-direction: column;
-            z-index: 3001;
-        }
-
-        .menu-popup-overlay.active .menu-slide-panel {
-            transform: translateX(0);
-        }
-
-        .menu-panel-header {
-            display: flex;
-            justify-content: space-between;
+            gap: 25px;
             align-items: center;
-            margin-bottom: 35px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 15px;
         }
 
-        .menu-panel-header h2 {
-            font-size: 0.95rem;
+        .nav-item {
+            cursor: pointer;
+            padding: 4px 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .nav-item:hover {
+            opacity: 0.7;
+        }
+
+        .nav-text {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: rotate(180deg);
+            font-size: 0.75rem;
             letter-spacing: 3px;
             text-transform: uppercase;
-            color: #38bdf8;
-            font-weight: 700;
-        }
-
-        .menu-panel-close {
-            background: none;
-            border: none;
-            color: #aaa;
-            font-size: 1.4rem;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-
-        .menu-panel-close:hover {
-            color: #fff;
-        }
-
-        .menu-panel-links {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .menu-panel-links a {
-            color: #ccc;
-            text-decoration: none;
-            font-size: 1.05rem;
+            color: #777;
             font-weight: 500;
-            padding: 12px 16px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.2s ease;
+            white-space: nowrap;
+            transition: color 0.2s ease;
         }
 
-        .menu-panel-links a:hover {
-            background: rgba(56, 189, 248, 0.1);
-            border-color: rgba(56, 189, 248, 0.3);
+        .nav-item:hover .nav-text,
+        .nav-item.active .nav-text {
             color: #38bdf8;
         }
 
-        /* Main Content Layout */
+        /* Main Content Layout adjusted for 60px single sidebar */
         .main-content {
             margin-left: 60px;
             width: calc(100vw - 60px);
-        }
-
-        .section {
-            width: 100%;
-            height: auto;
-        }
-
-        /* Desktop Grid Rows: 2 side-by-side, each row snaps independently */
-        .grid-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            width: 100%;
-            height: 100vh;
-            scroll-snap-align: start;
-            scroll-snap-stop: always;
-            gap: 0;
-        }
-
-        .media-box {
-            width: 100%;
             height: 100vh;
             position: relative;
             overflow: hidden;
-            background-color: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
-        .media-box video {
+        /* Views System */
+        .view {
+            display: none;
+            width: 100%;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        .view.splash-view {
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* VIEW 0: Splash / Home Screen */
+        .splash-container {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .splash-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* VIEW 1: Editorial Full-Height Vertical Strips Layout */
+        .editorial-strip-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+            overflow-x: auto;
+            overflow-y: hidden;
+            background: #0b0b0b;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            will-change: scroll-position;
+        }
+
+        .editorial-strip-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .editorial-strip {
+            flex: 0 0 320px;
+            height: 100vh;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            transition: flex 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .editorial-strip.hide {
+            display: none;
+        }
+
+        @media (min-width: 769px) {
+            .editorial-strip:hover {
+                flex: 0 0 450px;
+            }
+        }
+
+        .editorial-strip video, 
+        .editorial-strip img {
             width: 100%;
             height: 100vh;
             object-fit: cover;
             display: block;
-            -webkit-user-select: none;
-            user-select: none;
-            -webkit-touch-callout: none;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @media (min-width: 769px) {
+            .editorial-strip:hover video,
+            .editorial-strip:hover img {
+                transform: scale(1.03);
+            }
+        }
+
+        .strip-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 35px 25px;
+            background: linear-gradient(to top, rgba(0,0,0,0.95), transparent);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        @media (min-width: 769px) {
+            .editorial-strip:hover .strip-caption {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .strip-number {
+            font-family: "Didot", "Bodoni MT", "Times New Roman", Times, serif;
+            font-size: 2.4rem;
+            font-weight: 400;
+            font-style: italic;
+            letter-spacing: 1px;
+            color: #38bdf8;
+            margin-bottom: 2px;
+            line-height: 1;
+        }
+
+        .strip-caption h3 {
+            font-size: 1.05rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .strip-caption p {
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #888;
+        }
+
+        /* VIEW 2A: Standard Project Detail View (Multi-row Vertical Snap Scroll) */
+        .detail-view-container {
+            width: 100%;
+            height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: #000;
+            position: relative;
+            scroll-snap-type: y mandatory;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .detail-view-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* VIEW 2B: Sawtooth 4-Column Expanding Horizontal View */
+        .sawtooth-view-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+            overflow-x: auto;
+            overflow-y: hidden;
+            background: #000;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            position: relative;
+            will-change: scroll-position;
+        }
+
+        .sawtooth-view-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .sawtooth-column {
+            flex: 0 0 25vw;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            background: #000;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            transition: flex 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @media (min-width: 769px) {
+            .sawtooth-column:hover {
+                flex: 0 0 80vw;
+            }
+        }
+
+        .sawtooth-column video,
+        .sawtooth-column img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* PER-PAGE / ROW ANNOTATION BADGE */
+        .page-annotation {
+            position: absolute;
+            bottom: 30px;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #fff;
             pointer-events: none;
         }
-
-        /* Desktop Only: 40px inset border framing exclusively on the closeup side */
-        @media (min-width: 769px) {
-            .media-box.closeup-framed {
-                padding: 40px;
-                background-color: #000;
-            }
-            .media-box.closeup-framed video {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-            }
+        .page-annotation.align-left {
+            left: 40px;
+        }
+        .page-annotation.align-right {
+            right: 40px;
+        }
+        .detail-view-container.light-mode .page-annotation {
+            background: rgba(255, 255, 255, 0.9);
+            color: #000;
+            border-color: rgba(0, 0, 0, 0.2);
         }
 
-        /* Mobile Viewport Adaptations: Unpacks grids into a pure single-file vertical stack */
+        /* STANDARD DARK ROW LAYOUTS (Vertical Snap Rows) */
+        .detail-view-container:not(.light-mode) .project-row {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+            flex: 0 0 100vh;
+            background: #000;
+            position: relative;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            transition: flex 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .project-media-box {
+            flex: 1 1 0;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: flex 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .project-media-box.framed {
+            padding: 40px;
+            background: #050505;
+        }
+
+        .project-media-box video,
+        .project-media-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* ============================================================
+           STRICTLY SCOPED LIGHT MODE / SHOW ILLUSTRATIONS OVERRIDES
+           ============================================================ */
+        .detail-view-container.light-mode {
+            background: #ffffff;
+            height: 100vh;
+            overflow-y: auto;
+            display: block;
+            scroll-snap-type: y mandatory;
+        }
+
+        /* Snap Wrapper for Each 100vh Page of the Grid */
+        .grid-page {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+        }
+
+        .detail-view-container.light-mode .project-row {
+            display: flex;
+            width: 100%;
+            flex: 1 1 0;
+            min-height: 0;
+            height: auto;
+            background: #ffffff;
+            border-bottom: none;
+            position: relative;
+            transition: flex 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .detail-view-container.light-mode .project-media-box {
+            background: #ffffff;
+            min-height: 0;
+            border-right: none;
+            padding: 4px;
+        }
+
+        .detail-view-container.light-mode .project-media-box img,
+        .detail-view-container.light-mode .project-media-box video {
+            width: 100%;
+            height: 100%;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            object-position: center center;
+        }
+
+        .detail-view-container.light-mode .project-media-box:hover {
+            z-index: 10;
+        }
+
+        /* Mobile Adaptations */
         @media (max-width: 768px) {
             html, body {
-                height: 100vh;
-                height: 100dvh;
+                width: 100vw;
+                height: 100%;
+                overflow-x: hidden;
+                overflow-y: auto;
             }
-
             .sidebar {
                 position: fixed;
                 top: 0;
@@ -240,203 +437,913 @@
                 width: 100vw;
                 height: 60px;
                 flex-direction: row;
-                align-items: center;
-                justify-content: space-between;
                 padding: 0 20px;
                 border-right: none;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.08);
                 z-index: 2000;
+                background-color: rgba(10, 10, 10, 0.98);
             }
-
-            .sidebar-menu-label {
-                writing-mode: horizontal-tb;
-                transform: none;
-                font-size: 0.9rem;
-                letter-spacing: 2px;
+            .sidebar-nav-stack {
+                flex-direction: row;
+                gap: 15px;
             }
-
-            .sidebar-brand {
+            .nav-text, .sidebar-brand {
                 writing-mode: horizontal-tb;
                 transform: none;
             }
-
-            .sidebar-brand span {
-                font-size: 0.9rem;
-                letter-spacing: 1px;
-                color: #ffffff;
-            }
-
-            .menu-slide-panel {
-                top: 60px;
-                left: 0;
+            .main-content {
+                margin-left: 0;
+                margin-top: 60px;
                 width: 100vw;
                 height: calc(100vh - 60px);
                 height: calc(100dvh - 60px);
-                transform: translateY(-100%);
-                transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+                position: relative;
+                overflow-y: auto;
             }
-
-            .menu-popup-overlay.active .menu-slide-panel {
-                transform: translateY(0);
-            }
-
-            .main-content {
-                margin-left: 0;
+            .view {
                 width: 100vw;
+                height: calc(100vh - 60px);
+                height: calc(100dvh - 60px);
+                position: absolute;
+                top: 0;
+                left: 0;
+                padding-top: 0;
             }
-
-            .section {
-                height: auto;
-                display: block;
+            .view.splash-view {
+                height: calc(100vh - 60px);
+                height: calc(100dvh - 60px);
             }
-
-            /* Disable grid layout on mobile, turning containers into normal wrappers */
-            .grid-container {
-                display: block;
+            .splash-container {
                 width: 100vw;
-                height: auto;
-                scroll-snap-align: none;
-                scroll-snap-stop: normal;
+                height: 100%;
             }
-
-            /* Every single media box becomes its own standalone full-screen stacked card */
-            .media-box, 
-            .media-box.closeup-framed {
-                padding: 0;
+            .editorial-strip-container {
+                flex-direction: column;
+                height: 100%;
+                overflow-x: hidden;
+                overflow-y: scroll;
+                scroll-snap-type: y mandatory;
+            }
+            .editorial-strip {
+                flex: 0 0 calc(100vh - 60px);
+                flex: 0 0 calc(100dvh - 60px);
                 width: 100vw;
-                height: 100vh;
-                height: 100dvh;
+                height: calc(100vh - 60px);
+                height: calc(100dvh - 60px);
                 scroll-snap-align: start;
                 scroll-snap-stop: always;
-                flex-shrink: 0;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            }
+            .editorial-strip video, 
+            .editorial-strip img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+            .strip-caption {
+                opacity: 1;
+                transform: translateY(0);
+                padding: 20px 20px 25px 20px;
+                background: linear-gradient(to top, rgba(0,0,0,0.95) 70%, transparent);
+                bottom: 0;
+            }
+            .sawtooth-view-container {
+                flex-direction: column;
+                height: 100%;
+                overflow-x: hidden;
+                overflow-y: scroll;
+                scroll-snap-type: y mandatory;
+            }
+            .sawtooth-column {
+                flex: 0 0 calc(100vh - 60px);
+                flex: 0 0 calc(100dvh - 60px);
+                width: 100vw;
+                height: calc(100vh - 60px);
+                height: calc(100dvh - 60px);
+                scroll-snap-align: start;
+                scroll-snap-stop: always;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            }
+            .sawtooth-column video,
+            .sawtooth-column img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+            
+            /* MOBILE: DEFAULT DARK PROJECTS */
+            .detail-view-container:not(.light-mode) .project-row {
+                flex-direction: column;
+                height: auto;
+            }
+            .project-media-box,
+            .project-media-box.framed {
+                width: 100vw;
+                height: calc(100vh - 60px);
+                height: calc(100dvh - 60px);
+                padding: 0;
+                scroll-snap-align: start;
+                scroll-snap-stop: always;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+                flex: 0 0 calc(100vh - 60px) !important;
+                flex: 0 0 calc(100dvh - 60px) !important;
+            }
+            .project-media-box video,
+            .project-media-box img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+            
+            /* MOBILE: LIGHT-MODE OVERRIDES (Smooth free-scroll 4 to a page) */
+            .detail-view-container.light-mode {
+                overflow-y: auto !important;
+                scroll-snap-type: none !important;
+                display: block;
+                height: calc(100vh - 60px);
+                height: calc(100dvh - 60px);
             }
 
-            .media-box video,
-            .media-box.closeup-framed video {
-                width: 100vw;
-                height: 100vh;
-                height: 100dvh;
-                object-fit: cover;
+            .detail-view-container.light-mode .grid-page {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: wrap !important;
+                width: 100vw !important;
+                height: auto !important;
+                min-height: calc(100vh - 60px);
+                scroll-snap-align: none !important;
+            }
+
+            .detail-view-container.light-mode .project-row {
+                display: contents !important; 
+            }
+
+            .detail-view-container.light-mode .project-media-box:not(.mobile-feature) {
+                display: none !important;
+            }
+
+            .detail-view-container.light-mode .project-media-box.mobile-feature {
+                width: 50vw !important;
+                flex: 0 0 50vw !important;
+                height: 40vh !important;
+                border: none !important; 
+                scroll-snap-align: none !important;
+                padding: 10px !important;
+            }
+
+            .detail-view-container.light-mode .project-media-box:hover {
+                transform: none !important;
+            }
+
+            .detail-view-container.light-mode .project-media-box img {
+                object-fit: contain !important;
+            }
+
+            .page-annotation {
+                bottom: 20px;
+                padding: 6px 12px;
+                font-size: 0.65rem;
+            }
+            .page-annotation.align-left {
+                left: 20px;
+            }
+            .page-annotation.align-right {
+                right: 20px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Slim Sidebar with Vertical MENU at top and pure white Shane Wilson at bottom -->
-    <aside class="sidebar" onclick="toggleMenuPopup()">
-        <div class="sidebar-menu-label">MENU</div>
-        <div class="sidebar-brand">
+    <!-- UNIFIED SINGLE SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-brand" onclick="switchView('homeView')">
             <span>Shane Wilson</span>
+        </div>
+        
+        <div class="sidebar-nav-stack">
+            <div class="nav-item active" onclick="filterStrips('all', this)">
+                <span class="nav-text">ALL</span>
+            </div>
+            <div class="nav-item" onclick="filterStrips('graphics', this)">
+                <span class="nav-text">GRAPHICS</span>
+            </div>
+            <div class="nav-item" onclick="filterStrips('fashion', this)">
+                <span class="nav-text">FASHION</span>
+            </div>
+            <div class="nav-item" onclick="filterStrips('3d', this)">
+                <span class="nav-text">3D</span>
+            </div>
         </div>
     </aside>
 
-    <!-- Slide-out Section Navigation Panel -->
-    <div class="menu-popup-overlay" id="menuPopup" onclick="handleOverlayClick(event)">
-        <div class="menu-slide-panel">
-            <div class="menu-panel-header">
-                <h2>Sections</h2>
-                <button class="menu-panel-close" onclick="toggleMenuPopup()">&times;</button>
-            </div>
-            <div class="menu-panel-links">
-                <a href="#char1" onclick="toggleMenuPopup()">Love on Tour</a>
-                <a href="#char2" onclick="toggleMenuPopup()">Mirror</a>
-                <a href="#char3" onclick="toggleMenuPopup()">Silver Fringe</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Portfolio Content -->
+    <!-- Main Content Container -->
     <main class="main-content">
 
-        <!-- Green Fringe / Love on Tour Section -->
-        <section id="char1" class="section">
-            <div class="grid-container">
-                <div class="media-box">
-                    <video src="HS_SilverFringe_Full-002.mp4" autoplay loop muted playsinline></video>
-                </div>
-                <div class="media-box closeup-framed">
-                    <video src="HS_SilverFringe_Closeup-002.mp4" autoplay loop muted playsinline></video>
-                </div>
-            </div>
-            <div class="grid-container">
-                <div class="media-box closeup-framed">
-                    <video src="HS_GreenFringe_Closeup-002.mp4" autoplay loop muted playsinline></video>
-                </div>
-                <div class="media-box">
-                    <video src="HS_GreenFringe_Full-002.mp4" autoplay loop muted playsinline></video>
-                </div>
-            </div>
-            <div class="grid-container">
-                <div class="media-box">
-                    <video src="HS_Mirror_Full-002.mp4" autoplay loop muted playsinline></video>
-                </div>
-                <div class="media-box closeup-framed">
-                    <video src="HS_Mirror_Closeup-002.mp4" autoplay loop muted playsinline></video>
-                </div>
-            </div>
-            <div class="grid-container">
-                <div class="media-box closeup-framed">
-                    <video src="HS_GreenFringe_Closeup-002.mp4" autoplay loop muted playsinline></video>
-                </div>
-                <div class="media-box">
-                    <video src="HS_GreenFringe_Full-002.mp4" autoplay loop muted playsinline></video>
-                </div>
+        <!-- VIEW 0: Splash / Home Screen -->
+        <section id="homeView" class="view splash-view">
+            <div class="splash-container" onclick="switchView('projectsView')">
+                <img src="Homepage.jpeg" alt="Shane Wilson Splash" class="splash-image">
             </div>
         </section>
 
-        <!-- Mirror Section -->
-        <section id="char2" class="section">
-            <div class="grid-container">
-                <div class="media-box closeup-framed">
-                    <video src="HS_Mirror_Closeup-001.mp4" autoplay loop muted playsinline></video>
-                </div>
-                <div class="media-box">
-                    <video src="HS_Mirror_Full-001.mp4" autoplay loop muted playsinline></video>
-                </div>
-            </div>
+        <!-- VIEW 1: Editorial Full-Height Vertical Strips Layout -->
+        <section id="projectsView" class="view active">
+            <div class="editorial-strip-container" id="editorialContainer"></div>
         </section>
 
-        <!-- Silver Fringe Section -->
-        <section id="char3" class="section">
-            <div class="grid-container">
-                <div class="media-box">
-                    <video src="HS_GreenFringe_Full-001.mp4" autoplay loop muted playsinline></video>
-                </div>
-                <div class="media-box closeup-framed">
-                    <video src="HS_SilverFringe_Closeup-001.mp4" autoplay loop muted playsinline></video>
-                </div>
-            </div>
+        <!-- VIEW 2: Project Detail View -->
+        <section id="detailView" class="view">
+            <div id="detailContainer"></div>
         </section>
 
     </main>
 
     <script>
-        function toggleMenuPopup() {
-            const popup = document.getElementById('menuPopup');
-            popup.classList.toggle('active');
+        const projects = [
+            {
+                id: 'tour',
+                title: 'Love on Tour',
+                subtitle: 'Fashion & 3D Motion',
+                categories: ['fashion', '3d'],
+                thumbSrc: 'HS_SilverFringe_Full.mp4',
+                thumbIsVideo: true,
+                rows: [
+                    {
+                        expandable: false,
+                        cols: [
+                            { src: "HS_SilverFringe_Full.mp4", isVideo: true, framed: false },
+                            { src: "HS_SilverFringe_closeup.mp4", isVideo: true, framed: true }
+                        ],
+                        pageTitle: "GRAMMYS PERFORMANCE 2023",
+                        titleAlign: "left"
+                    },
+                    {
+                        expandable: false,
+                        cols: [
+                            { src: "HS_Thermostrass_Closeup.mp4", isVideo: true, framed: true },
+                            { src: "HS_Thermostrass_Full.mp4", isVideo: true, framed: false }
+                        ],
+                        pageTitle: "PALM SPRINGS 2023",
+                        titleAlign: "right"
+                    },
+                    {
+                        expandable: false,
+                        cols: [
+                            { src: "HS_Hearts_Full.mp4", isVideo: true, framed: false },
+                            { src: "HS_Hearts_Closeup.mp4", isVideo: true, framed: true }
+                        ],
+                        pageTitle: "LONDON 2023",
+                        titleAlign: "left"
+                    },
+                    {
+                        expandable: false,
+                        cols: [
+                            { src: "HS_GreenFringe_Closeup.mp4", isVideo: true, framed: true },
+                            { src: "HS_GreenFringe_Full.mp4", isVideo: true, framed: false }
+                        ],
+                        pageTitle: "VIENNA 2023",
+                        titleAlign: "right"
+                    },
+                    {
+                        expandable: false,
+                        cols: [
+                            { src: "HS_Mirror_Full.mp4", isVideo: true, framed: false },
+                            { src: "HS_Mirror_Closeup.mp4", isVideo: true, framed: true }
+                        ],
+                        pageTitle: "LISBON 2023",
+                        titleAlign: "left"
+                    },
+                ]
+            },
+            {
+                id: 'sawtooth',
+                title: 'Sawtooth',
+                subtitle: 'Fashion & 3D Motion',
+                categories: ['fashion', '3d'],
+                thumbSrc: 'ShaneWilson-Sawtooth_Web-003.mp4',
+                thumbIsVideo: true,
+                rows: [
+                    { 
+                     expandable: true,   
+                     cols: [
+                            { src: "ShaneWilson-Sawtooth_Web-002.mp4", isVideo: true, framed: false },
+                            { src: "ShaneWilson-Sawtooth_Web-003.mp4", isVideo: true, framed: false },
+                            { src: "ShaneWilson-Sawtooth_Web-004.mp4", isVideo: true, framed: false }
+                        ],
+                        pageTitle: "Sawtooth",
+                        titleAlign: "left"
+                    }
+                ]
+            },
+            {
+                id: 'embroidery',
+                title: 'Embroidery Renders',
+                subtitle: '3D Placements & Embellishments',
+                categories: ['fashion', '3d'],
+                thumbSrc: 'Comogonie-StarryNight-001.png',
+                thumbIsVideo: false,
+                rows: [
+                    {
+                        expandable: false,
+                        cols: [
+                            { src: "Comogonie-StarryNight-001.png", isVideo: false, framed: false },
+                            { src: "Comogonie-StarryNight-004.png", isVideo: false, framed: true }
+                        ],
+                        pageTitle: "GUCCI CRUISE 2023",
+                        titleAlign: "left"
+                    },
+                    {
+                        expandable: false,
+                        cols: [
+                            { src: "Comogonie-StarryNight-008.3.png", isVideo: false, framed: true },
+                            { src: "Comogonie-StarryNight-005.3.png", isVideo: false, framed: false }
+                        ],
+                        pageTitle: "GUCCI CRUISE 2023",
+                        titleAlign: "right"
+                    },
+                    {
+                        expandable: false,
+                        cols: [
+                            { src: "SS25-Mirror-001.png", isVideo: false, framed: false },
+                            { src: "SS25-Mirror-002.png", isVideo: false, framed: true }
+                        ],
+                        pageTitle: "GUCCI SPRING SUMMER 2025",
+                        titleAlign: "left"
+                    },
+                    {
+                        expandable: false,
+                        cols: [
+                            { src: "CR_BlackLace-002.png", isVideo: false, framed: true },
+                            { src: "CR_BlackLace-001.png", isVideo: false, framed: false }
+                        ],
+                        pageTitle: "GUCCI CRUISE 2026",
+                        titleAlign: "right"
+                    },
+                    {
+                        expandable: false,
+                        cols: [
+                            { src: "CR_BlackLace-001.png", isVideo: false, framed: false },
+                            { src: "CR_BlackLace-002.png", isVideo: false, framed: true }
+                        ],
+                        pageTitle: "GUCCI CRUISE 2026",
+                        titleAlign: "left"
+                    }
+                ]
+            },
+            {
+    id: 'diy',
+    title: 'DIY',
+    subtitle: 'Fashion & 3D Project',
+    categories: ['fashion', '3d'],
+    thumbSrc: 'ChannelGreen-02.png',
+    thumbIsVideo: false,
+    rows: [
+        {
+                        expandable: false,
+                        cols: [
+                            { src: "Untitled-1 2.jpg", isVideo: false, framed: false },
+                            { src: "ChannelGreen-03.jpg", isVideo: false, framed: false },
+                            { src: "Untitled-1 2.jpg", isVideo: false, framed: false },
+                            { src: "ChannelYellow-03.jpg", isVideo: false, framed: false }
+                        ],
+                        pageTitle: "GUCCI CRUISE 2023",
+                        titleAlign: "left"
+                    },
+    ]
+},
+            {
+                id: 'buttons',
+                title: 'Buttons',
+                subtitle: 'Fashion & 3D Hardware',
+                categories: ['fashion', '3d'],
+                thumbSrc: 'Buttons-001.jpg',
+                thumbIsVideo: false,
+                rows: [
+                    {
+                        expandable: false,
+                        cols: [
+                            { src: "Buttons-001.jpg", isVideo: false, framed: false },
+                            { src: "Buttons-001.jpg", isVideo: false, framed: true }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'labels',
+                title: 'Labels',
+                subtitle: 'Graphics & Fashion Branding',
+                categories: ['graphics', 'fashion'],
+                thumbSrc: 'Etichette-002-002.png',
+                thumbIsVideo: false,
+                rows: [
+                    {
+                        expandable: false,
+                        cols: [
+                            { src: "Etichette-002-002.png", isVideo: false, framed: false }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'fabric',
+                title: 'Fabric',
+                subtitle: 'Graphics & Fashion Textiles',
+                categories: ['graphics', 'fashion'],
+                thumbSrc: 'Untitled-18.jpg',
+                thumbIsVideo: false,
+                rows: [
+                    {
+                        expandable: false,
+                        cols: [
+                            { src: "Untitled-18.jpg", isVideo: false, framed: false }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'vip-illustrations',
+                title: 'VIP Illustrations',
+                subtitle: 'Graphics & Fashion',
+                categories: ['graphics', 'fashion'],
+                thumbSrc: 'DAMIANO01.png',
+                thumbIsVideo: false,
+                rows: [
+                    {
+                        expandable: false,
+                        cols: [
+                            { src: "DAMIANO01.png", isVideo: false, framed: false }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'show-illustrations',
+                title: 'Show Illustrations',
+                subtitle: 'Graphics & Fashion Illustration',
+                categories: ['graphics', 'fashion'],
+                thumbSrc: 'ShowGiugnoIllustrazioniFinale02_Page_16 copy.jpg',
+                thumbIsVideo: false,
+                lightBg: true, 
+                pages: [
+                    {
+                        pageTitle: "SHOW ILLUSTRATIONS — GUCCI MENS SPRING 2025",
+                        titleAlign: "left",
+                        rows: [
+                            {
+                                expandable: true,
+                                cols: [
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_01_Riccardo-001.jpg", isVideo: false},
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_02_George-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_03_Cirillo-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_04_Adebayo-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_05_Daniel-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_06_Modou-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_07_Liu-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_07_Rokas-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_09_Alrik-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_10_Ayo-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_11_Finn-001.jpg", isVideo: false , mobileFeature: true }
+                                    
+                                ]
+                            },
+                            {
+                                expandable: true,
+                                cols: [
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_12_Ibra-001.jpg", isVideo: false , mobileFeature: true },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_13_Emilio-001.jpg", isVideo: false},
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_14_Damian-001.jpg", isVideo: false},
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_15_Maurice-001.jpg", isVideo: false},
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_16_Yacine-001.jpg", isVideo: false, mobileFeature: true },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_17_Giovanni-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_18_Isidro-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_19_Alejo-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_20_Lawrence-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_23_MateoG-001.jpg", isVideo: false , mobileFeature: true },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_24_Nicolo-001.jpg", isVideo: false }
+                                
+                                ]
+                            },
+                            {
+                                expandable: true,
+                                cols: [
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_25_Elias-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_26_Douta-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_27_Seyi-001.jpg", isVideo: false},
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_28_Yunyeong-001.jpg", isVideo: false , mobileFeature: true },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_29_Feng-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_30_Uzu-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_31_Alejandro-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_32_Lebo-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_33_Ann-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_34_MartinM-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_35_Zaram-001.jpg", isVideo: false },
+                                    
+                                ]
+                            },
+                            {
+                                expandable: true,
+                                cols: [
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_36_Archille-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_37_Kristof-001.jpg", isVideo: false , mobileFeature: true },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_38_Joel-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_39_Taehyun-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_40_Arian-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_41_Giulio-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_42_Meet-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_43_Dami-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_44_Bruno-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_45_Weishuo-001.jpg", isVideo: false , mobileFeature: true },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_46_LiCheng-001.jpg", isVideo: false , mobileFeature: true }
+                                    
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        pageTitle: "SHOW ILLUSTRATIONS — GUCCI WOMENS SPRING 2025",
+                        titleAlign: "right",
+                        rows: [
+                            {
+                                expandable: true,
+                                cols: [
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_01_LOLI.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_02_JIAHUI.jpg", isVideo: false , mobileFeature: true },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_03_ANA_R.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_04.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_05_ANGELINA.jpg", isVideo: false , mobileFeature: true },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_06_NYAJUOK.jpg", isVideo: false , mobileFeature: true },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_07_SELENA.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_08_MARIA.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_09_AWAR.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_10_betsy.jpg", isVideo: false , mobileFeature: true },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_11_CHLOE.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_12_HE_CONG.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_13.jpg", isVideo: false }
+                                ]
+                            },
+                            {
+                                expandable: true,
+                                cols: [
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_14_ALIX.jpg", isVideo: false},
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_15_CARLA.jpg", isVideo: false},
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_16_LIBBY.jpg", isVideo: false},
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_17_MONA.jpg", isVideo: false},
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_18_VITTORIA.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_19.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_20_BIBI.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_21_LULU.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_22_AJUS.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_23_ANOK.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_24_FADIA.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_25_MIA.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_26_ANNIE.jpg", isVideo: false }
+                                ]
+                            },
+                            {
+                                expandable: true,
+                                cols: [
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_27_MATHILDA.jpg", isVideo: false},
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_28_STEFF.jpg", isVideo: false , mobileFeature: true },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_29_INES.jpg", isVideo: false , mobileFeature: true },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_30_JENNIFER.jpg", isVideo: false},
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_31_YANAN.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_32_ROXANE.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_33_EMESE.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_34_ANNEMARY.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_35_ELLA.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_36_AMY.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_37_LUIZA.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_38_JIAHUI_M.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_39_ATHERTON_GRACE.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_40_SASCHA.jpg", isVideo: false , mobileFeature: true }
+                                ]
+                            },
+                            {
+                                expandable: true,
+                                cols: [
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_41_LEA.jpg", isVideo: false},
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_42_NYANDERI.jpg", isVideo: false},
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_43_KAROLINA.jpg", isVideo: false},
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_44.jpg", isVideo: false},
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_45_PENELOPE.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_46_LEIDY.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_47_KAROLINA_S.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_48_SARÀ.jpg", isVideo: false},
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_49_NIKA.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_50_APOLLINO.jpg", isVideo: false , mobileFeature: true },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_51_ZHANG.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_52_ESTHER.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_53_ESTELLE.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_54_STELLA.jpg", isVideo: false }
+                                ]
+                            },
+                            
+                            
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'lenor-illustrations',
+                title: 'Lenor illustrations',
+                subtitle: 'Graphics & Fashion',
+                categories: ['graphics', 'fashion'],
+                thumbSrc: '495368275_1220105856781125_4420727245888424751_n.jpg',
+                thumbIsVideo: false,
+                rows: [
+                    {
+                        expandable: false,
+                        cols: [
+                            { src: "Untitled-1.jpg", isVideo: false, framed: false },
+                            { src: "Untitled-12.jpg", isVideo: false, framed: false }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        let activeProject = null;
+
+        function renderEditorialStrips(filterCategory = 'all') {
+            const container = document.getElementById('editorialContainer');
+            container.innerHTML = '';
+
+            let counter = 1;
+            projects.forEach(project => {
+                if (filterCategory === 'all' || project.categories.includes(filterCategory)) {
+                    const strip = document.createElement('div');
+                    strip.className = 'editorial-strip';
+                    strip.setAttribute('data-category', project.categories.join(' '));
+                    strip.onclick = () => openProject(project.id);
+
+                    const mediaElement = project.thumbIsVideo
+                        ? `<video src="${project.thumbSrc}" autoplay loop muted playsinline></video>`
+                        : `<img src="${project.thumbSrc}" alt="${project.title}">`;
+
+                    const formattedNum = String(counter).padStart(2, '0');
+
+                    strip.innerHTML = `
+                        ${mediaElement}
+                        <div class="strip-caption">
+                            <h4 class="strip-number">${formattedNum}</h4>
+                            <h3>${project.title}</h3>
+                            <p>${project.subtitle}</p>
+                        </div>
+                    `;
+                    container.appendChild(strip);
+                    counter++;
+                }
+            });
         }
 
-        function handleOverlayClick(event) {
-            const popup = document.getElementById('menuPopup');
-            if (event.target === popup) {
-                popup.classList.remove('active');
+        // Reusable Inertial Smooth Wheel Scroll Engine
+        function makeInertialScrollable(container) {
+            if (!container || container._hasInertial) return;
+            container._hasInertial = true;
+
+            let targetScroll = container.scrollLeft;
+            let currentScroll = container.scrollLeft;
+            let isScrolling = false;
+
+            container.addEventListener('wheel', (evt) => {
+                if (window.innerWidth > 768 && (evt.deltaX !== 0 || evt.deltaY !== 0)) {
+                    if (Math.abs(container.scrollLeft - currentScroll) > 5) {
+                        targetScroll = container.scrollLeft;
+                        currentScroll = container.scrollLeft;
+                    }
+
+                    evt.preventDefault();
+                    
+                    const scrollDelta = evt.deltaX !== 0 ? evt.deltaX : evt.deltaY;
+                    targetScroll += scrollDelta * 0.8;
+                    targetScroll = Math.max(0, Math.min(targetScroll, container.scrollWidth - container.clientWidth));
+
+                    if (!isScrolling) {
+                        isScrolling = true;
+                        requestAnimationFrame(updateScroll);
+                    }
+                }
+            }, { passive: false });
+
+            function updateScroll() {
+                currentScroll += (targetScroll - currentScroll) * 0.08;
+                container.scrollLeft = currentScroll;
+
+                if (Math.abs(targetScroll - currentScroll) > 0.3) {
+                    requestAnimationFrame(updateScroll);
+                } else {
+                    isScrolling = false;
+                }
             }
         }
 
-        // Security: Block right-click context menus on media items and prevent dragging
+        window.addEventListener('DOMContentLoaded', () => {
+            renderEditorialStrips('all');
+            makeInertialScrollable(document.getElementById('editorialContainer'));
+        });
+
+        function switchView(viewId) {
+            const currentActive = document.querySelector('.view.active');
+            const targetView = document.getElementById(viewId);
+
+            if (currentActive === targetView) return;
+
+            if (viewId !== 'detailView') {
+                activeProject = null;
+            }
+
+            gsap.to(currentActive, {
+                opacity: 0,
+                duration: 0.2,
+                onComplete: () => {
+                    currentActive.classList.remove('active');
+                    targetView.classList.add('active');
+                    gsap.fromTo(targetView, { opacity: 0 }, { opacity: 1, duration: 0.4 });
+                    
+                    window.scrollTo(0, 0);
+                    if (viewId === 'detailView' && activeProject) {
+                        const detailContainer = document.getElementById('detailContainer');
+                        if (detailContainer) detailContainer.scrollTop = 0;
+                    } else if (viewId === 'projectsView') {
+                        const edContainer = document.getElementById('editorialContainer');
+                        if (edContainer) edContainer.scrollLeft = 0;
+                    }
+                }
+            });
+        }
+
+        function filterStrips(category, element) {
+            switchView('projectsView');
+
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+
+            renderEditorialStrips(category);
+            const edContainer = document.getElementById('editorialContainer');
+            if (edContainer) edContainer.scrollLeft = 0;
+        }
+
+        function openProject(projectId) {
+            const project = projects.find(p => p.id === projectId) || projects[0];
+            activeProject = project;
+            const container = document.getElementById('detailContainer');
+            
+            container.innerHTML = '';
+            container.className = '';
+
+            if (project.isSawtooth) {
+                container.className = 'sawtooth-view-container';
+                
+                project.columns.forEach(col => {
+                    const colDiv = document.createElement('div');
+                    colDiv.className = 'sawtooth-column';
+                    
+                    const mediaEl = col.isVideo
+                        ? `<video src="${col.src}" autoplay loop muted playsinline></video>`
+                        : `<img src="${col.src}" alt="Sawtooth Media">`;
+
+                    colDiv.innerHTML = mediaEl;
+                    container.appendChild(colDiv);
+                });
+
+                makeInertialScrollable(container);
+
+            } else {
+                container.className = 'detail-view-container';
+                if (project.lightBg) {
+                    container.classList.add('light-mode');
+                }
+                
+                let activePages = project.pages;
+                if (project.lightBg && window.innerWidth <= 768) {
+                    let mobileItems = [];
+                    project.pages.forEach(p => {
+                        p.rows.forEach(r => {
+                            r.cols.forEach(c => {
+                                if (c.mobileFeature) mobileItems.push(c);
+                            });
+                        });
+                    });
+
+                    let chunkedPages = [];
+                    for (let i = 0; i < mobileItems.length; i += 4) {
+                        let chunk = mobileItems.slice(i, i + 4);
+                        chunkedPages.push({
+                            pageTitle: `PAGE ${Math.floor(i/4) + 1}`,
+                            titleAlign: 'left',
+                            rows: [
+                                { expandable: false, cols: chunk.slice(0, 2) },
+                                { expandable: false, cols: chunk.slice(2, 4) }
+                            ]
+                        });
+                    }
+                    activePages = chunkedPages;
+                }
+
+                if (activePages) {
+                    activePages.forEach(page => {
+                        const pageWrapper = document.createElement('div');
+                        pageWrapper.className = 'grid-page';
+
+                        if (page.pageTitle) {
+                            const annotation = document.createElement('div');
+                            annotation.className = `page-annotation ${page.titleAlign === 'right' ? 'align-right' : 'align-left'}`;
+                            annotation.innerText = page.pageTitle;
+                            pageWrapper.appendChild(annotation);
+                        }
+                        
+                        page.rows.forEach(rowObj => {
+                            const row = document.createElement('div');
+                            row.className = 'project-row' + (rowObj.expandable ? ' expandable' : '');
+                            
+                            rowObj.cols.forEach(col => {
+                                const box = document.createElement('div');
+                                box.className = `project-media-box ${col.framed ? 'framed' : ''}`;
+                                
+                                if (col.mobileFeature) {
+                                    box.classList.add('mobile-feature');
+                                }
+
+                                const mediaElement = col.isVideo
+                                    ? `<video src="${col.src}" autoplay loop muted playsinline></video>`
+                                    : `<img src="${col.src}" alt="Project Media">`;
+                                box.innerHTML = mediaElement;
+                                row.appendChild(box);
+                            });
+                            pageWrapper.appendChild(row);
+                        });
+                        container.appendChild(pageWrapper);
+                    });
+                } else if (project.rows) {
+                    project.rows.forEach(rowObj => {
+                        const row = document.createElement('div');
+                        row.className = 'project-row' + (rowObj.expandable ? ' expandable' : '');
+
+                        if (rowObj.pageTitle) {
+                            const annotation = document.createElement('div');
+                            annotation.className = `page-annotation ${rowObj.titleAlign === 'right' ? 'align-right' : 'align-left'}`;
+                            annotation.innerText = rowObj.pageTitle;
+                            row.appendChild(annotation);
+                        }
+                        
+                        rowObj.cols.forEach(col => {
+                            const box = document.createElement('div');
+                            box.className = `project-media-box ${col.framed ? 'framed' : ''}`;
+                            const mediaElement = col.isVideo
+                                ? `<video src="${col.src}" autoplay loop muted playsinline></video>`
+                                : `<img src="${col.src}" alt="Project Media">`;
+                            box.innerHTML = mediaElement;
+                            row.appendChild(box);
+                        });
+                        container.appendChild(row);
+                    });
+                }
+
+                const blocksToIterate = project.pages ? container.querySelectorAll('.grid-page') : [container];
+                
+                blocksToIterate.forEach(block => {
+                    const rows = block.querySelectorAll('.project-row');
+                    rows.forEach((row, rIndex) => {
+                        const boxes = row.querySelectorAll('.project-media-box');
+                        boxes.forEach((box, cIndex) => {
+                            if (row.classList.contains('expandable')) {
+                                box.addEventListener('mouseenter', () => {
+                                    rows.forEach((otherRow, oRIndex) => {
+                                        otherRow.style.flex = (oRIndex === rIndex) ? '65' : `${35 / (rows.length - 1)}`;
+                                    });
+                                    boxes.forEach((otherBox, oCIndex) => {
+                                        otherBox.style.flex = (oCIndex === cIndex) ? '65' : `${35 / (boxes.length - 1)}`;
+                                    });
+                                });
+                            }
+                        });
+
+                        row.addEventListener('mouseleave', () => {
+                            rows.forEach(r => {
+                                r.style.flex = '1 1 0';
+                                r.querySelectorAll('.project-media-box').forEach(b => b.style.flex = '1 1 0');
+                            });
+                        });
+                    });
+                });
+            }
+
+            switchView('detailView');
+        }
+
         document.addEventListener('contextmenu', function(e) {
-            if (e.target.tagName === 'VIDEO' || e.target.closest('.media-box')) {
+            if (e.target.tagName === 'VIDEO' || e.target.tagName === 'IMG' || e.target.closest('.editorial-strip') || e.target.closest('.project-media-box') || e.target.closest('.sawtooth-column')) {
                 e.preventDefault();
             }
         });
 
         document.addEventListener('dragstart', function(e) {
-            if (e.target.tagName === 'VIDEO') {
+            if (e.target.tagName === 'VIDEO' || e.target.tagName === 'IMG') {
                 e.preventDefault();
             }
         });
     </script>
-
 </body>
 </html>

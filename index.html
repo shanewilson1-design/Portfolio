@@ -17,7 +17,7 @@
         html, body {
             width: 100vw;
             height: 100vh;
-            overflow: hidden; /* Strictly locks the page to prevent "black bar" rubber-banding */
+            overflow: hidden !important; 
             background-color: #0b0b0b;
             color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -186,7 +186,7 @@
             height: 100%;
             object-fit: cover;
             display: block;
-            transform: scale(1.05); /* Aggressive crop to hide export padding */
+            transform: scale(1.05); 
             transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -256,6 +256,45 @@
         }
         .detail-view-container::-webkit-scrollbar { display: none; }
 
+        /* FLOATING PROJECT HEADER */
+        .project-floating-header {
+            position: fixed;
+            top: 30px;
+            left: 100px; /* 60px sidebar + 40px spacing */
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            pointer-events: auto;
+        }
+        .project-floating-header h2 {
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin: 0;
+            font-weight: 600;
+        }
+        .project-floating-subtitle {
+            font-size: 0.65rem;
+            letter-spacing: 1px;
+            color: #aaa;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .project-floating-header:hover .project-floating-subtitle {
+            max-height: 50px;
+            opacity: 1;
+            margin-top: 8px;
+        }
+
         .sawtooth-view-container {
             display: flex;
             width: 100%;
@@ -291,6 +330,7 @@
             transform: scale(1.05);
         }
 
+        /* PAGE ANNOTATIONS (BOTTOM LABELS) */
         .page-annotation {
             position: absolute;
             bottom: 30px;
@@ -299,19 +339,42 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 10px 20px;
-            font-size: 0.75rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
             color: #fff;
-            pointer-events: none;
+            pointer-events: auto; /* Allows hover */
+            display: flex;
+            align-items: center;
+            gap: 0; 
+            transition: all 0.3s ease;
         }
         .page-annotation.align-left { left: 40px; }
         .page-annotation.align-right { right: 40px; }
         
-        .detail-view-container.light-mode .page-annotation {
-            background: rgba(255, 255, 255, 0.9);
-            color: #000;
-            border-color: rgba(0, 0, 0, 0.2);
+        .annotation-title {
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        
+        .annotation-desc {
+            max-width: 0;
+            opacity: 0;
+            overflow: hidden;
+            white-space: nowrap;
+            transition: all 0.4s ease;
+            color: #aaa;
+            font-size: 0.65rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Hover expansion for descriptions */
+        .page-annotation:hover .annotation-desc {
+            max-width: 400px;
+            opacity: 1;
+            margin-left: 12px;
+            padding-left: 12px;
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .detail-view-container:not(.light-mode) .project-row {
@@ -432,7 +495,6 @@
             html, body {
                 width: 100vw;
                 height: 100%;
-                overflow: hidden !important; /* Fixes the black gap rubber-banding */
             }
             .sidebar {
                 position: fixed;
@@ -449,7 +511,6 @@
                 border-bottom: 1px solid rgba(255, 255, 255, 0.08);
                 z-index: 2000;
                 background-color: rgba(10, 10, 10, 0.98);
-                /* Scrolling setup for small screens */
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
                 white-space: nowrap;
@@ -459,9 +520,9 @@
             }
             
             .sidebar-brand {
-                writing-mode: horizontal-tb !important; /* Force right side up */
-                transform: none !important; /* Removes the 180 flip */
-                margin-right: 25px; /* Added spacing from ALL */
+                writing-mode: horizontal-tb !important; 
+                transform: none !important; 
+                margin-right: 25px; 
                 flex-shrink: 0;
             }
             .sidebar-brand span {
@@ -474,7 +535,7 @@
                 display: flex;
                 flex-direction: row;
                 align-items: center;
-                gap: 20px; /* Space between nav items */
+                gap: 20px; 
                 flex-shrink: 0;
             }
             .nav-item {
@@ -493,16 +554,21 @@
                 height: calc(100vh - 60px);
                 height: calc(100dvh - 60px);
                 position: relative;
-                overflow: hidden; /* Locks out any rogue layout jumps */
+                overflow: hidden; 
             }
             
-            /* Inheritance fixes the 100vh calculation gap permanently */
             .view, .view.splash-view, .splash-container {
                 width: 100vw;
                 height: 100%;
                 position: absolute;
                 top: 0;
                 left: 0;
+            }
+            
+            .project-floating-header {
+                top: 80px; 
+                left: 20px;
+                padding: 8px 16px;
             }
             
             .editorial-strip-container, .sawtooth-view-container {
@@ -577,10 +643,13 @@
             .page-annotation {
                 bottom: 20px;
                 padding: 6px 12px;
-                font-size: 0.65rem;
             }
             .page-annotation.align-left { left: 20px; }
             .page-annotation.align-right { right: 20px; }
+            .page-annotation:hover .annotation-desc {
+                max-width: 250px;
+                white-space: normal; 
+            }
             
             .contact-container a { font-size: 1.3rem; }
         }
@@ -625,6 +694,11 @@
 
         <!-- VIEW 2: Project Detail View -->
         <section id="detailView" class="view">
+            <!-- New Floating Header -->
+            <div id="projectFloatingHeader" class="project-floating-header">
+                <h2 id="floatingTitle"></h2>
+                <div id="floatingSubtitle" class="project-floating-subtitle"></div>
+            </div>
             <div id="detailContainer"></div>
         </section>
 
@@ -651,7 +725,7 @@
                         expandable: false,
                         cols: [
                             { src: "LoveOnTour/HS_SilverFringe_Full.mp4", isVideo: true, framed: false },
-                            { src: "LoveOnTour/HS_SilverFringe_Closeup.mp4", isVideo: true, framed: true }
+                            { src: "LoveOnTour/HS_SilverFringe_closeup.mp4", isVideo: true, framed: true }
                         ],
                         pageTitle: "GRAMMYS PERFORMANCE 2023",
                         titleAlign: "left"
@@ -729,6 +803,7 @@
                             { src: "Comogonie-StarryNight-004.png", isVideo: false, framed: true }
                         ],
                         pageTitle: "GUCCI CRUISE 2023",
+                        pageDescription: "Allover botanical embroidery placements.",
                         titleAlign: "left"
                     },
                     {
@@ -738,6 +813,7 @@
                             { src: "Comogonie-StarryNight-005.3.png", isVideo: false, framed: false }
                         ],
                         pageTitle: "GUCCI CRUISE 2023",
+                        pageDescription: "Allover botanical embroidery placements.",
                         titleAlign: "right"
                     },
                     {
@@ -1069,7 +1145,6 @@
             });
         }
 
-        // Reusable Inertial Smooth Wheel Scroll Engine
         function makeInertialScrollable(container) {
             if (!container || container._hasInertial) return;
             container._hasInertial = true;
@@ -1165,8 +1240,12 @@
         function openProject(projectId) {
             const project = projects.find(p => p.id === projectId) || projects[0];
             activeProject = project;
-            const container = document.getElementById('detailContainer');
             
+            // Populate Floating Header
+            document.getElementById('floatingTitle').innerText = project.title;
+            document.getElementById('floatingSubtitle').innerText = project.subtitle;
+
+            const container = document.getElementById('detailContainer');
             container.innerHTML = '';
             container.className = '';
 
@@ -1194,6 +1273,8 @@
                 }
                 
                 let activePages = project.pages;
+                
+                // Mobile layout generation for light-mode grid
                 if (project.lightBg && window.innerWidth <= 768) {
                     let mobileItems = [];
                     project.pages.forEach(p => {
@@ -1208,7 +1289,7 @@
                     for (let i = 0; i < mobileItems.length; i += 4) {
                         let chunk = mobileItems.slice(i, i + 4);
                         chunkedPages.push({
-                            pageTitle: `PAGE ${Math.floor(i/4) + 1}`,
+                            // Deliberately empty so 'PAGE X' is not generated on mobile
                             titleAlign: 'left',
                             rows: [
                                 { expandable: false, cols: chunk.slice(0, 2) },
@@ -1227,7 +1308,11 @@
                         if (page.pageTitle) {
                             const annotation = document.createElement('div');
                             annotation.className = `page-annotation ${page.titleAlign === 'right' ? 'align-right' : 'align-left'}`;
-                            annotation.innerText = page.pageTitle;
+                            let innerHTML = `<span class="annotation-title">${page.pageTitle}</span>`;
+                            if (page.pageDescription) {
+                                innerHTML += `<span class="annotation-desc">${page.pageDescription}</span>`;
+                            }
+                            annotation.innerHTML = innerHTML;
                             pageWrapper.appendChild(annotation);
                         }
                         
@@ -1261,7 +1346,13 @@
                         if (rowObj.pageTitle) {
                             const annotation = document.createElement('div');
                             annotation.className = `page-annotation ${rowObj.titleAlign === 'right' ? 'align-right' : 'align-left'}`;
-                            annotation.innerText = rowObj.pageTitle;
+                            
+                            let innerHTML = `<span class="annotation-title">${rowObj.pageTitle}</span>`;
+                            if (rowObj.pageDescription) {
+                                innerHTML += `<span class="annotation-desc">${rowObj.pageDescription}</span>`;
+                            }
+                            annotation.innerHTML = innerHTML;
+                            
                             row.appendChild(annotation);
                         }
                         

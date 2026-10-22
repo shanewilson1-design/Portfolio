@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shane Wilson - Portfolio</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      border-radius: 0 !important;
+    }
+
+    body {
+      background-color: #0b0b0b;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 320px;
+      padding: 40px 30px;
+      background: rgba(15, 15, 15, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: center;
+    }
+
+    .brand-title {
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #ffffff;
+      font-weight: 600;
+      margin-bottom: 25px;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    input[type="password"] {
+      width: 100%;
+      padding: 12px 14px;
+      background: #000000;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    input[type="password"]:focus {
+      border-color: #38bdf8;
+    }
+
+    input[type="password"]::placeholder {
+      color: #666666;
+      font-size: 0.7rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: transparent;
+      border: 1px solid #38bdf8;
+      color: #38bdf8;
+      font-size: 0.72rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    button:hover {
+      background: #38bdf8;
+      color: #0b0b0b;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <div class="brand-title">Shane Wilson</div>
+    
+    <form class="input-group" onsubmit="unlock(event)">
+      <input type="password" id="pass" placeholder="Enter Password" autofocus autocomplete="current-password">
+      <button type="submit">Enter</button>
+    </form>
+  </div>
+
+  <script>
+    async function unlock(event) {
+      if (event) event.preventDefault();
+      
+      const input = document.getElementById('pass').value;
+      if (!input) return;
+
+      const encoder = new TextEncoder();
+      const data = encoder.encode(input);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      
+      // Explicitly points to index.html inside the secret hashed folder
+      window.location.href = "./" + hashHex + "/index.html";
+    }
+  </script>
+
+</body>
+</html>

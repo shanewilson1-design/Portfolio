@@ -1,0 +1,1670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Shane Wilson - Portfolio</title>
+    <!-- GSAP for smooth cinematic transitions -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            border-radius: 0 !important;
+        }
+
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden !important; 
+            background-color: #0b0b0b;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        /* UNIFIED SINGLE SIDEBAR (60px wide) */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 60px;
+            height: 100vh;
+            background-color: rgba(10, 10, 10, 0.98);
+            backdrop-filter: blur(16px);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 30px 0;
+            z-index: 1000;
+        }
+
+        .sidebar-brand {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: rotate(180deg);
+            cursor: pointer;
+            transition: opacity 0.2s ease, color 0.2s ease;
+        }
+
+        .sidebar-brand:hover {
+            opacity: 0.7;
+        }
+
+        .sidebar-brand span {
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #ffffff;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: color 0.2s ease;
+        }
+        
+        .sidebar-brand.active span {
+            color: #38bdf8;
+        }
+
+        /* SIDEBAR CENTER SECTION TITLE */
+        .sidebar-center-title {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: rotate(180deg);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sidebar-center-title.visible {
+            opacity: 1;
+        }
+
+        .sidebar-center-title span {
+            font-size: 0.75rem;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: #38bdf8;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .sidebar-nav-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .nav-item {
+            cursor: pointer;
+            padding: 4px 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .nav-item:hover {
+            opacity: 0.7;
+        }
+
+        .nav-text {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: rotate(180deg);
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #777;
+            font-weight: 500;
+            white-space: nowrap;
+            transition: color 0.2s ease;
+        }
+
+        .nav-item:hover .nav-text,
+        .nav-item.active .nav-text {
+            color: #38bdf8;
+        }
+
+        /* Main Content Layout */
+        .main-content {
+            margin-left: 60px;
+            width: calc(100vw - 60px);
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Views System */
+        .view {
+            display: none;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        .view.splash-view {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .splash-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .splash-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Editorial Full-Height Vertical Strips */
+        .editorial-strip-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #0b0b0b;
+        }
+
+        .editorial-strip {
+            flex: 1 1 0;
+            min-width: 0; 
+            height: 100%;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            transition: flex 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @media (min-width: 769px) {
+            .editorial-strip:hover {
+                flex: 3 1 0;
+            }
+        }
+
+        .editorial-strip video, 
+        .editorial-strip img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transform: scale(1.05); 
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @media (min-width: 769px) {
+            .editorial-strip:hover video,
+            .editorial-strip:hover img {
+                transform: scale(1.07);
+            }
+        }
+
+        .strip-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 35px 25px;
+            background: linear-gradient(to top, rgba(0,0,0,0.95), transparent);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        @media (min-width: 769px) {
+            .editorial-strip:hover .strip-caption {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .strip-number {
+            font-family: "Didot", "Bodoni MT", "Times New Roman", Times, serif;
+            font-size: 2.4rem;
+            font-weight: 400;
+            font-style: italic;
+            letter-spacing: 1px;
+            color: #38bdf8;
+            margin-bottom: 2px;
+            line-height: 1;
+        }
+
+        .strip-caption h3 {
+            font-size: 1.05rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .strip-caption p {
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            color: #888;
+        }
+
+        /* Detail Views */
+        .detail-view-container {
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: #000;
+            position: relative;
+            scroll-snap-type: y mandatory;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-y: contain;
+        }
+        .detail-view-container::-webkit-scrollbar { display: none; }
+
+        /* FLOATING PAGE HEADER (TOP LEFT) */
+        .project-floating-header {
+            position: fixed;
+            top: 30px;
+            left: 90px;
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            pointer-events: auto;
+            width: 320px;
+            max-height: calc(100vh - 60px);
+            transition: opacity 0.3s ease;
+        }
+        .project-floating-header h2 {
+            font-size: 0.8rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin: 0;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .project-floating-subtitle {
+            font-size: 0.72rem;
+            letter-spacing: 0.3px;
+            color: #aaa;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            line-height: 1.35;
+        }
+        .project-floating-header.has-subtitle:hover .project-floating-subtitle {
+            max-height: 80vh;
+            opacity: 1;
+            margin-top: 8px;
+            overflow-y: auto;
+        }
+
+        /* PAGE & COLUMN ANNOTATIONS */
+        .page-annotation {
+            position: absolute;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            color: #fff;
+            pointer-events: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 320px;
+            max-width: calc(100% - 60px);
+            max-height: calc(100vh - 80px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .grid-page.light-mode .page-annotation {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            color: #000;
+        }
+        
+        .page-annotation.has-description { cursor: pointer; }
+        .page-annotation.align-right { right: 30px; left: auto; align-items: flex-end; text-align: right; }
+        .page-annotation.align-left { left: 30px; right: auto; align-items: flex-start; text-align: left; }
+        .page-annotation.align-center { align-items: center; text-align: center; left: 50%; transform: translateX(-50%); }
+        .page-annotation.align-center .annotation-title-wrapper { justify-content: center; }
+        .page-annotation.align-top { top: 30px; bottom: auto; }
+        .page-annotation.align-bottom { bottom: 30px; top: auto; }
+        
+        .annotation-title-wrapper { width: 100%; display: flex; align-items: center; }
+        .page-annotation.align-right .annotation-title-wrapper { justify-content: flex-end; }
+        .page-annotation.align-left .annotation-title-wrapper { justify-content: flex-start; }
+
+        .annotation-title {
+            font-size: 0.78rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex-shrink: 0;
+            transition: white-space 0.3s;
+        }
+        
+        .expand-icon { margin-left: 8px; margin-right: 8px; font-size: 14px; color: #888; transition: transform 0.3s ease; }
+
+        .annotation-description {
+            font-size: 0.7rem; letter-spacing: 0.5px; color: #bbb; line-height: 1.45;
+            max-height: 0; opacity: 0; overflow: hidden; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); width: 100%;
+        }
+        .grid-page.light-mode .annotation-description { color: #555; }
+
+        .page-annotation.has-description:hover .annotation-description,
+        .page-annotation.has-description.expanded .annotation-description { 
+            max-height: 70vh; 
+            opacity: 1; 
+            margin-top: 10px; 
+            overflow-y: auto; 
+        }
+        .page-annotation.has-description:hover .expand-icon,
+        .page-annotation.has-description.expanded .expand-icon { transform: rotate(45deg); }
+        .page-annotation.has-description:hover .annotation-title,
+        .page-annotation.has-description.expanded .annotation-title { white-space: normal; }
+
+        /* Dark mode scrollable rows */
+        .detail-view-container > .project-row,
+        .grid-page > .project-row {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            flex: 0 0 100%;
+            background: #000;
+            position: relative;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            transition: flex 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        .project-media-box {
+            flex: 1 1 0;
+            min-width: 0;
+            min-height: 0;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: flex 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .project-media-box.framed { background: #050505; }
+        .media-frame-inner {
+            position: absolute;
+            top: 30px; bottom: 30px; left: 30px; right: 30px;
+            overflow: hidden; background: #000;
+        }
+        .media-frame-inner video,
+        .media-frame-inner img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .media-frame-inner.contain-fit video,
+        .media-frame-inner.contain-fit img { object-fit: contain; }
+
+        .project-media-box > video,
+        .project-media-box > img {
+            width: 100%; height: 100%; object-fit: cover; display: block;
+            transform: scale(1.05); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* GRID STYLES FOR INNER COLUMNS */
+        .project-media-box > .nested-grid {
+            width: 100%; height: 100%; display: grid; gap: 0; overflow: hidden; 
+            transform: scale(1.05); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .nested-grid .grid-cell {
+            width: 100%; height: 100%; overflow: hidden; min-height: 0; min-width: 0;
+            display: flex; align-items: center; justify-content: center; position: relative;
+        }
+
+        .nested-grid .grid-cell.framed { background: #050505; }
+
+        .nested-grid img { width: 100%; height: 100%; object-fit: cover; display: block; min-height: 0; min-width: 0; }
+        
+        .project-row.horizontal-only .project-media-box > .nested-grid { height: 100% !important; width: 100% !important; transform: none !important; }
+
+        .project-row.horizontal-only .project-media-box > img,
+        .project-row.horizontal-only .project-media-box > video {
+            height: 100% !important; width: auto !important; max-width: none !important; object-fit: cover; transform: none !important; 
+        }
+
+        /* Pages (Dark & Light Mode) */
+        .grid-page {
+            display: flex; flex-direction: column; width: 100%; height: 100%; position: relative;
+            scroll-snap-align: start; scroll-snap-stop: always; background: #000; color: #ffffff; overflow: hidden; flex-shrink: 0;
+        }
+        .grid-page.light-mode { background: #ffffff; color: #000000; padding-top: 75px; padding-bottom: 75px; }
+        .grid-page.light-mode .project-row {
+            display: flex; width: 100%; flex: 1 1 0; min-height: 0; height: auto; background: #ffffff; border-bottom: none; overflow: hidden; position: relative;
+        }
+        .grid-page.light-mode .project-media-box { background: #ffffff; min-height: 0; border-right: none; padding: 4px; }
+        .grid-page.light-mode .project-media-box img,
+        .grid-page.light-mode .project-media-box video {
+            width: 100% !important; height: 100% !important; max-width: 100%; max-height: 100%; object-fit: contain !important; transform: none !important;
+        }
+        .grid-page.light-mode .project-media-box:hover { z-index: 10; }
+
+        /* AUDIO PLAYER OVERLAY */
+        .audio-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.65);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            cursor: pointer;
+            transition: background 0.4s ease;
+        }
+        
+        .audio-overlay:hover {
+            background: rgba(0, 0, 0, 0.45);
+        }
+
+        .audio-overlay.is-playing {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .audio-play-btn {
+            width: 70px; height: 70px;
+            border-radius: 50% !important;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .audio-overlay:hover .audio-play-btn {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.05);
+        }
+
+        .play-icon {
+            width: 0; height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-left: 16px solid #fff;
+            margin-left: 4px;
+        }
+
+        .pause-icon {
+            display: flex; gap: 5px;
+        }
+        .pause-icon div {
+            width: 4px; height: 18px; background: #fff;
+        }
+
+        /* Contact View Styles */
+        .contact-container {
+            width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0b0b0b;
+        }
+        .contact-container p { color: #888; font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 15px; }
+        .contact-container a {
+            color: #38bdf8; text-decoration: none; font-size: 1.8rem; letter-spacing: 1px;
+            font-family: "Didot", "Bodoni MT", "Times New Roman", Times, serif; font-style: italic; transition: opacity 0.3s ease;
+        }
+        .contact-container a:hover { opacity: 0.7; }
+
+        /* Mobile Adaptations */
+        @media (max-width: 768px) {
+            html, body { width: 100vw; height: 100%; overflow: hidden; }
+            .sidebar {
+                position: fixed; top: 0; left: 0; width: 100vw; height: 60px;
+                display: flex; flex-direction: row; align-items: center; justify-content: space-between;
+                padding: 0 20px; border-right: none; border-bottom: 1px solid rgba(255, 255, 255, 0.08); z-index: 2000;
+                background-color: rgba(10, 10, 10, 0.98); overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap;
+            }
+            .sidebar::-webkit-scrollbar { display: none; }
+            
+            .sidebar-brand { writing-mode: horizontal-tb !important; transform: none !important; margin-right: 15px; flex-shrink: 0; }
+            .sidebar-brand span { writing-mode: horizontal-tb !important; transform: none !important; font-size: 0.75rem; }
+            
+            .sidebar-center-title {
+                writing-mode: horizontal-tb !important;
+                transform: none !important;
+                margin: 0 10px;
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                text-align: center;
+                overflow: hidden;
+            }
+            .sidebar-center-title span {
+                writing-mode: horizontal-tb !important;
+                transform: none !important;
+                font-size: 0.75rem;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .sidebar-nav-stack { display: flex; flex-direction: row; align-items: center; gap: 20px; flex-shrink: 0; }
+            .nav-item { flex-shrink: 0; }
+            .nav-text { writing-mode: horizontal-tb !important; transform: none !important; font-size: 0.75rem; }
+
+            .main-content {
+                margin-left: 0; margin-top: 60px; width: 100vw; height: calc(100vh - 60px); height: calc(100dvh - 60px); position: relative; overflow: hidden; 
+            }
+            
+            .view, .view.splash-view, .splash-container { width: 100vw; height: 100%; position: absolute; top: 0; left: 0; }
+            
+            .project-floating-header { 
+                top: 70px; 
+                left: 12px; 
+                width: calc(100vw - 24px); 
+                max-width: 300px;
+                padding: 8px 14px; 
+                z-index: 150;
+            }
+            
+            .editorial-strip-container { flex-direction: column; height: 100%; overflow-x: hidden; overflow-y: scroll; scroll-snap-type: y mandatory; -webkit-overflow-scrolling: touch; }
+            .editorial-strip { flex: 0 0 100%; width: 100vw; height: 100%; scroll-snap-align: start; scroll-snap-stop: always; border-right: none; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+            
+            .strip-caption {
+                opacity: 1; transform: translateY(0); padding: 20px 20px 25px 20px;
+                background: linear-gradient(to top, rgba(0,0,0,0.95) 70%, transparent); bottom: 0;
+            }
+            
+            .detail-view-container {
+                scroll-snap-type: y mandatory;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .detail-view-container > .project-row { 
+                position: relative; 
+                display: flex; 
+                flex-direction: column; 
+                width: 100vw; 
+                height: auto; 
+                flex: none; 
+                scroll-snap-align: none; 
+            }
+
+            .detail-view-container .project-media-box, 
+            .detail-view-container .project-media-box.framed {
+                width: 100vw; 
+                height: calc(100vh - 60px); 
+                height: calc(100dvh - 60px);
+                scroll-snap-align: start !important; 
+                scroll-snap-stop: always !important; 
+                border-bottom: 1px solid rgba(255, 255, 255, 0.08); 
+                flex: none !important;
+            }
+
+            .detail-view-container .project-media-box > img,
+            .detail-view-container .project-media-box > video { width: 100% !important; height: 100% !important; object-fit: cover !important; }
+            
+            /* Grid-pages with mobile features */
+            .grid-page.light-mode, .grid-page:has(.mobile-feature) {
+                overflow-y: auto !important; scroll-snap-type: none !important; display: flex !important; flex-direction: row !important;
+                flex-wrap: wrap !important; width: 100vw !important; height: auto !important; min-height: 100% !important; scroll-snap-align: none !important; align-content: flex-start; padding: 0 !important;
+            }
+            .grid-page.light-mode .project-row, .grid-page:has(.mobile-feature) .project-row { display: contents !important; }
+            
+            .grid-page.light-mode .project-media-box:not(.mobile-feature),
+            .grid-page:has(.mobile-feature) .project-media-box:not(.mobile-feature) { display: none !important; }
+            
+            .grid-page.light-mode .project-media-box.mobile-feature,
+            .grid-page:has(.mobile-feature) .project-media-box.mobile-feature {
+                width: 50vw !important; flex: 0 0 50vw !important; height: 40vh !important; border: none !important; scroll-snap-align: none !important; padding: 10px !important;
+            }
+            .grid-page.light-mode .project-media-box img,
+            .grid-page.light-mode .project-media-box video,
+            .grid-page:has(.mobile-feature) .project-media-box img,
+            .grid-page:has(.mobile-feature) .project-media-box video { object-fit: contain !important; }
+
+            .page-annotation { bottom: 20px; width: 220px; padding: 6px 12px; }
+            .page-annotation.align-left { left: 15px; }
+            .page-annotation.align-right { right: 15px; }
+            .page-annotation.align-center { left: 50%; transform: translateX(-50%); }
+            
+            .contact-container a { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-brand active" onclick="filterStrips('all', this)">
+            <span>Shane Wilson</span>
+        </div>
+        
+        <div class="sidebar-center-title" id="sidebarCenterTitle">
+            <span id="sidebarCenterTitleText"></span>
+        </div>
+
+        <div class="sidebar-nav-stack">
+            <div class="nav-item" onclick="openContact(this)">
+                <span class="nav-text">Contact</span>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <!-- VIEW 0: Splash / Home Screen -->
+        <section id="homeView" class="view splash-view">
+            <div class="splash-container" onclick="switchView('projectsView')">
+                <img src="Homepage.jpeg" alt="Shane Wilson Splash" class="splash-image">
+            </div>
+        </section>
+
+        <!-- VIEW 1: Editorial Full-Height Vertical Strips Layout -->
+        <section id="projectsView" class="view active">
+            <div class="editorial-strip-container" id="editorialContainer"></div>
+        </section>
+
+        <!-- VIEW 2: Project Detail View -->
+        <section id="detailView" class="view">
+            <div id="projectFloatingHeader" class="project-floating-header">
+                <h2 id="floatingTitle"></h2>
+                <div id="floatingSubtitle" class="project-floating-subtitle"></div>
+            </div>
+            <div id="detailContainer" class="detail-view-container"></div>
+        </section>
+
+        <!-- VIEW 3: Contact -->
+        <section id="contactView" class="view">
+            <div class="contact-container">
+                <p>Get in touch</p>
+                <a href="mailto:hello@shanewilson.com">hello@shanewilson.com</a>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const projects = [
+            {
+                id: 'Embroidery',
+                title: 'Embroidery',
+                subtitle: 'A curated selection of 3D embroidery studies. Replicating the qualities of each piece, focusing on precise pattern placements, accurate stitch-by-stitch embellishments, and authentic textiles.',
+                categories: ['fashion', '3d', 'portfolio'],
+                thumbSrc: 'LoveOnTour/HS_SilverFringe_Full.mp4',
+                thumbIsVideo: true,
+                rows: [
+                    {
+                        expandable: 'horizontal',
+                        cols: [
+                            { src: "LoveOnTour/HS_SilverFringe_Full.mp4", isVideo: true, framed: false },
+                            { src: "LoveOnTour/HS_GreenFringe_Full.mp4", isVideo: true, framed: false },
+                            { src: "LoveOnTour/HS_Thermostrass_Full.mp4", isVideo: true, framed: false },
+                            { src: "LoveOnTour/HS_Mirror_Full.mp4", isVideo: true, framed: false },
+                            { src: "LoveOnTour/HS_Hearts_Full.mp4", isVideo: true, framed: false },
+                        ],
+                        pageTitle: "Love on Tour",
+                        titleAlign: "left",
+                        pageDescription: "A collection of 3D studies capturing high-impact show pieces designed for Harry Styles' Love on Tour. Each render features high-poly recreations of dense paillettes, strass, mirrors, and motion-reactive fringe. The avatar was custom built including bespoke hair, material shaders, and placement-accurate tattoo artwork. Custom footwear was also modeled and textured to replicate the Gazelles from the Gucci x Adidas collaboration.",
+                    },
+                    {
+                        expandable: 'horizontal',
+                        cols: [
+                            { src: "LoveOnTour/HS_SilverFringe_Closeup.mp4", isVideo: true, framed: false },
+                            { src: "LoveOnTour/HS_GreenFringe_Closeup.mp4", isVideo: true, framed: false },
+                            { src: "LoveOnTour/HS_Thermostrass_Closeup.mp4", isVideo: true, framed: false },
+                            { src: "LoveOnTour/HS_Mirror_Closeup.mp4", isVideo: true, framed: false },
+                            { src: "LoveOnTour/HS_Hearts_Closeup.mp4", isVideo: true, framed: false }
+                        ],
+                        pageTitle: "Love on Tour",
+                        titleAlign: "left"
+                    },
+                    {
+                        expandable: 'horizontal',
+                        cols: [
+                            { src: "EmbroideryRenders/Comogonie-StarryNight-001.png", isVideo: false, framed: true },
+                            { src: "EmbroideryRenders/Comogonie-StarryNight-004.png", isVideo: false, framed: false,
+                                colTitle: "Green Night",
+                                colDescription: "A 3D placement study capturing the dramatic contrast of a painterly night sky, brought to life through rich green and silver sequins with warm orange accents. Built using flat sequins of varying sizes in an organic, irregular pattern, mapped to maintain continuous flow across complex seamlines.",
+                                colAlign: "center",
+                                colPosition: "bottom"
+                             },
+                            { src: "EmbroideryRenders/Comogonie-StarryNight-005.3.png", isVideo: false, framed: true },
+                            { src: "EmbroideryRenders/Comogonie-StarryNight-008.3.png", isVideo: false, framed: false,
+                                colTitle: "Constellations",
+                                colDescription: "A 3D placement study mapping custom constellation artwork across a large-scale canvas. Strass and bugle bead embroideries are fitted across the dark blue velvet gown and expansive kimono sleeves.",
+                                colAlign: "center",
+                                colPosition: "bottom"
+                             },
+                        ],
+                        pageTitle: "Cosmogonie Gucci Cruise 2023",
+                        titleAlign: "left"
+                    },
+                    {
+                        cols: [
+                            { src: "EmbroideryRenders/SS25-Mirror-001.png", isVideo: false, framed: true },
+                            { src: "EmbroideryRenders/SS25-Mirror-002.png", isVideo: false, framed: false,
+                                colTitle: "Mirrors",
+                                colDescription: "A 3D placement study featuring custom mirror embellishments and dynamic fringing. Replicating the collection's original placement layout, the 3D model was subsequently adapted to increase fringe density across the lower garment for added weight and visual impact.",
+                                colAlign: "center",
+                                colPosition: "bottom"
+                             },
+                        ],
+                        pageTitle: "Gucci Spring 2025",
+                        titleAlign: "left"
+                    },
+                    {
+                        expandable: 'horizontal',
+                        cols: [
+                            { src: "EmbroideryRenders/CR_BlackLace-001.png", isVideo: false, framed: true },
+                            { src: "EmbroideryRenders/CR_BlackLace-002.png", isVideo: false, framed: false,
+                                colTitle: "Mirrors",
+                                colDescription: "A 3D placement study featuring custom mirror embellishments and dynamic fringing. Replicating the collection's original placement layout, the 3D model was subsequently adapted to increase fringe density across the lower garment for added weight and visual impact.",
+                                colAlign: "center",
+                                colPosition: "bottom"
+                             },
+                            { src: "EmbroideryRenders/CR_BlackLace-001.png", isVideo: false, framed: true },
+                            { src: "EmbroideryRenders/CR_BlackLace-002.png", isVideo: false, framed: false,
+                                colTitle: "Mirrors",
+                                colDescription: "A 3D placement study featuring custom mirror embellishments and dynamic fringing. Replicating the collection's original placement layout, the 3D model was subsequently adapted to increase fringe density across the lower garment for added weight and visual impact.",
+                                colAlign: "center",
+                                colPosition: "bottom"
+                             },
+                        ],
+                        pageTitle: "Gucci Cruise 2026",
+                        titleAlign: "left"
+                    }
+                ]
+            }, 
+            {
+                id: 'Animation',
+                title: 'Animation',
+                subtitle: 'Sawtooth is a continuous, single-shot 3D animation following an ice skater through a surreal, ever-shifting landscape. Captured in one unbroken camera sequence, the camera acts as a witness to a linear psychological unfolding tracing a seamless transition from subconscious denial to sensory overwhelm, and ultimately towards some form of integration. As the skater glides across desert glaciers, brutalist structures, and maximalist neon architectures, the uninterrupted motion underscores that psychological growth is never a series of neat edits, but a continuous and unrelenting forward push.',
+                categories: ['fashion', '3d', 'portfolio'],
+                thumbSrc: 'Sawtooth/ShaneWilson-Sawtooth_Web-004.mp4',
+                thumbIsVideo: true,
+                rows: [
+                    {
+                        expandable: 'sawtooth', 
+                        cols: [
+                            { src: "Sawtooth/ShaneWilson-Sawtooth_Web-002.mp4", isVideo: true, framed: false },
+                            { src: "Sawtooth/ShaneWilson-Sawtooth_Web-003.mp4", isVideo: true, framed: false },
+                            { src: "Sawtooth/ShaneWilson-Sawtooth_Web-004.mp4", isVideo: true, framed: false },
+                        ],
+                        pageTitle: "Sawtooth Animation",
+                        titleAlign: "left",
+                        pageDescription: "Sawtooth is a continuous, single-shot 3D animation following an ice skater through a surreal, ever-shifting landscape. Captured in one unbroken camera sequence, the camera acts as a witness to a linear psychological unfolding tracing a seamless transition from subconscious denial to sensory overwhelm, and ultimately towards some form of integration. As the skater glides across desert glaciers, brutalist structures, and maximalist neon architectures, the uninterrupted motion underscores that psychological growth is never a series of neat edits, but a continuous and unrelenting forward push.'",
+                    
+                    },
+                    {
+                        expandable: false, 
+                        pageTitle: "Sawtooth Animation",
+                        cols: [
+                            {
+                                src: "Sawtooth/Armour-001.mp4",
+                                isVideo: true,
+                                colTitle: "Defence & Metaphor",
+                                colDescription: "The shifting armour serves as a central metaphor for psychological defence mechanisms, self-preservation, and shame. As emotional threats escalate, the armour reflexively assembles alternating between a mirror-like reflective chrome that attempts to deflect reality and a matte black void designed to absorb and erase it.",
+                                colAlign: "center",
+                                colPosition: "bottom"
+                            },
+                            { 
+                                src: "Sawtooth/Environment-001.mp4",
+                                isVideo: true,
+                                framed: false,
+                                colTitle: "Reactive Worldbuilding",
+                                colDescription: "The environments function as a direct, dreamlike externalization of the skater’s subconscious mind. Moving through fictional spaces that blur the line between physical architecture and mental state, every visual component is dynamically bound to the soundtrack. Frequencies and rhythmic pulses act as technical drivers for lighting, fog density, and emission shaders, causing the surrounding world to pulse, react, and fracture in complete lockstep with the music and the avatar's internal pulse.",
+                                colAlign: "center",
+                                colPosition: "bottom"
+                            },
+                            { 
+                                src: "Sawtooth/Strudel-001.mp4", 
+                                isVideo: true, 
+                                audioSrc: "Sawtooth/SawtoothAudio-001.mp3",
+                                framed: true,
+                                colTitle: "Algorithmic Rhythm",
+                                colDescription: "To tap into something raw and deeply personal, I taught myself algorithmic composition and live-coded the entire score using Strudel. Driven by an elevated BPM intended to incite a subtle, persistent anxiety, the music follows a traditional verse-chorus structure while embedding the sawtooth wave as its core sonic motif. The harsh, sharp geometry of the sawtooth waveform recurs throughout the composition to reflect cyclical emotional phases, sharp internal shifts, and the recurring friction of processing complex feelings.",
+                                colAlign: "center",
+                                colPosition: "bottom" 
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'labels & Hardware',
+                title: 'labels & Hardware',
+                subtitle: 'A collection of label developments with a focus on accessory and apparel',
+                categories: ['graphics', 'fashion'],
+                thumbSrc: 'Labels/GucciLogo-002.png',
+                thumbIsVideo: false,
+                rows: [
+                    {
+                        expandable: 'horizontal',
+                        cols: [
+                            { 
+                                type: 'grid', 
+                                gridCols: 2,
+                                images: [
+                                    { src: "Labels/GucciSS23-03.1.png" , cellPadding: '0px' },
+                                    { src: "Labels/GucciSS23-03.2.png" , cellPadding: '0px' }
+                                ]
+                            },
+                            { src: "Labels/GucciSS23-02.png", isVideo: false, framed: false,
+                                colTitle: "Geometric Grotesque",
+                                colDescription: "Created during an interim transition for the house, this label direction was developed to anchor the brand in its archival roots. Drawing inspiration from historical Gucci storefronts and vintage advertisements, the typography utilizes a geometric grotesque typeface to reinterpret classic house codes into a modern layout.",
+                                colAlign: "center",
+                                colPosition: "bottom"
+                             },
+                                
+                            { 
+                                type: 'grid', 
+                                gridCols: 2,
+                                images: [
+                                    { src: "Labels/GucciSS23-01.4.png", cellPadding: '0px' },
+                                    { src: "Labels/GucciSS23-01.2.png", cellPadding: '0px'  }
+                                ]
+                            },
+                        ],
+                        pageTitle: "Gucci AW23 Logo",
+                        titleAlign: "left"
+                    },
+                    {
+                        expandable: 'horizontal',
+                        cols: [
+                            { src: "Labels/JackieNotte-001.png", isVideo: false, framed: false },
+                            { 
+                                src: "Labels/JackieNotte-002.png", 
+                                isVideo: false, 
+                                framed: false,
+                                colTitle: "Interior Label Study",
+                                colDescription: "Created alongside the introduction of Rosso Ancora and the new hook-closure Jackie Notte mini evening bag. Developed as a prominent structural element, the enlarged label was precisely proportioned to serve a dual function as an integrated interior pocket.",
+                                colAlign: "center",
+                                colPosition: "bottom"
+                            },
+                            { src: "Labels/JackieNotte-003.png", isVideo: false, framed: false },
+                        ],
+                        pageTitle: "Jackie Notte",
+                        titleAlign: "left"
+                    },
+                    {
+                        expandable: 'horizontal',
+                        cols: [
+                            { src: "Labels/Shirting-001.png", isVideo: false, framed: false },
+                            { src: "Labels/Shirting-002.1.png", isVideo: false, framed: false,
+                                colTitle: "Interior Label Study",
+                                colDescription: "Seasonal label proposals developed for exterior apparel application across multiple placements, including the collar back, placket, and cuffs. Created to expand brand presence across garments through collection-specific palettes.",
+                                colAlign: "center",
+                                colPosition: "bottom"
+                             },
+                            { src: "Labels/Shirting-003.1.png", isVideo: false, framed: false },
+                        ],
+                        pageTitle: "Shirting",
+                        titleAlign: "left",
+                        
+                    }
+                ]
+            },
+            {
+                id: 'fabric',
+                title: 'Fabric',
+                subtitle: 'Graphics & Fashion Textiles',
+                categories: ['graphics', 'fashion'],
+                thumbSrc: 'Untitled-18.jpg',
+                thumbIsVideo: false,
+                rows: [
+                    {
+                        expandable: 'horizontal',
+                        cols: [
+                            { src: "Fabric/DIY_Final_Swatches01.jpg", isVideo: false, framed: false },
+                            { src: "Fabric/Tartan02.jpg", isVideo: false, framed: false, },
+                            { src: "Fabric/DIY_Final_Swatches.jpg", isVideo: false, framed: false }
+                        ],
+                        pageTitle: "Textile Swatches",
+                        titleAlign: "left"
+                    }
+                ]
+            },
+            {
+                id: 'illustrations',
+                title: 'Illustrations',
+                subtitle: 'VIP & Show Illustrations',
+                categories: ['graphics', 'fashion'],
+                thumbSrc: 'Illustrations/VIP/VIP_Illustrations_Damiano-001.png',
+                thumbIsVideo: false,
+                thumbPosition: 'center 20%',
+                pages: [
+                    {
+                        lightBg: false,
+                        pageTitle: "VIP Illustrations",
+                        pageDescription: "Custom illustrations created exclusively for the VIP guests and special attendees. Designed specifically for the tour and promotional materials.",
+                        titleAlign: "left",
+                        position: "bottom",
+                        rows: [
+                            {
+                                expandable: 'horizontal',
+                                cols: [
+                                    { src: "Illustrations/VIP/VIP_Illustrations_Ethan-001.png", isVideo: false, framed: true, mobileFeature: true },
+                                    { src: "Illustrations/VIP/VIP_Illustrations_Damiano-001.png", isVideo: false, framed: true, mobileFeature: true },
+                                    { src: "Illustrations/VIP/VIP_Illustrations_Victoria-001.png", isVideo: false, framed: true, mobileFeature: true },
+                                    { src: "Illustrations/VIP/VIP_Illustrations_Thomas-001.png", isVideo: false, framed: true, mobileFeature: true },
+                                    { src: "Illustrations/VIP/VIP_Illustrations_ASAP-001.png", isVideo: false, framed: true, mobileFeature: true }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        lightBg: true,
+                        pageTitle: "Gucci Mens Spring 2025",
+                        titleAlign: "right",
+                        position: "bottom",
+                        rows: [
+                            {
+                                expandable: true,
+                                cols: [
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_01_Riccardo-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_02_George-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_03_Cirillo-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_04_Adebayo-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_05_Daniel-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_06_Modou-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_07_Liu-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_07_Rokas-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_09_Alrik-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_10_Ayo-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_11_Finn-001.jpg", isVideo: false, mobileFeature: true }
+                                ]
+                            },
+                            {
+                                expandable: true,
+                                cols: [
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_12_Ibra-001.jpg", isVideo: false, mobileFeature: true },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_13_Emilio-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_14_Damian-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_15_Maurice-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_16_Yacine-001.jpg", isVideo: false, mobileFeature: true },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_17_Giovanni-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_18_Isidro-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_19_Alejo-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_20_Lawrence-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_23_MateoG-001.jpg", isVideo: false, mobileFeature: true },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_24_Nicolo-001.jpg", isVideo: false }
+                                ]
+                            },
+                            {
+                                expandable: true,
+                                cols: [
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_25_Elias-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_26_Douta-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_27_Seyi-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_28_Yunyeong-001.jpg", isVideo: false, mobileFeature: true },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_29_Feng-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_30_Uzu-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_31_Alejandro-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_32_Lebo-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_33_Ann-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_34_MartinM-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_35_Zaram-001.jpg", isVideo: false }
+                                ]
+                            },
+                            {
+                                expandable: true,
+                                cols: [
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_36_Archille-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_37_Kristof-001.jpg", isVideo: false, mobileFeature: true },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_38_Joel-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_39_Taehyun-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_40_Arian-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_41_Giulio-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_42_Meet-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_43_Dami-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_44_Bruno-001.jpg", isVideo: false },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_45_Weishuo-001.jpg", isVideo: false, mobileFeature: true },
+                                    { src: "Illustrations/MensSpring2025/JPEG/ShowIllustrations_Mens_SS25_46_LiCheng-001.jpg", isVideo: false, mobileFeature: true }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        lightBg: true,
+                        pageTitle: "Gucci Womens Spring 2025",
+                        titleAlign: "right",
+                        position: "bottom",
+                        rows: [
+                            {
+                                expandable: true,
+                                cols: [
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_01_LOLI.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_02_JIAHUI.jpg", isVideo: false, mobileFeature: true },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_03_ANA_R.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_04.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_05_ANGELINA.jpg", isVideo: false, mobileFeature: true },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_06_NYAJUOK.jpg", isVideo: false, mobileFeature: true },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_07_SELENA.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_08_MARIA.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_09_AWAR.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_10_betsy.jpg", isVideo: false, mobileFeature: true },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_11_CHLOE.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_12_HE_CONG.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_13.jpg", isVideo: false }
+                                ]
+                            },
+                            {
+                                expandable: true,
+                                cols: [
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_14_ALIX.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_15_CARLA.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_16_LIBBY.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_17_MONA.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_18_VITTORIA.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_19.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_20_BIBI.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_21_LULU.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_22_AJUS.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_23_ANOK.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_24_FADIA.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_25_MIA.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_26_ANNIE.jpg", isVideo: false }
+                                ]
+                            },
+                            {
+                                expandable: true,
+                                cols: [
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_27_MATHILDA.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_28_STEFF.jpg", isVideo: false, mobileFeature: true },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_29_INES.jpg", isVideo: false, mobileFeature: true },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_30_JENNIFER.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_31_YANAN.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_32_ROXANE.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_33_EMESE.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_34_ANNEMARY.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_35_ELLA.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_36_AMY.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_37_LUIZA.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_38_JIAHUI_M.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_39_ATHERTON_GRACE.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_40_SASCHA.jpg", isVideo: false, mobileFeature: true }
+                                ]
+                            },
+                            {
+                                expandable: true,
+                                cols: [
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_41_LEA.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_42_NYANDERI.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_43_KAROLINA.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_44.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_45_PENELOPE.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_46_LEIDY.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_47_KAROLINA_S.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_48_SARA.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_49_NIKA.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_50_APOLLINO.jpg", isVideo: false, mobileFeature: true },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_51_ZHANG.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_52_ESTHER.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_53_ESTELLE.jpg", isVideo: false },
+                                    { src: "Illustrations/WomensSpring2025/JPEG/ShowIllustrations_Womens_SS25_54_STELLA.jpg", isVideo: false }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        lightBg: false,
+                        pageTitle: "Lenor Illustrations",
+                        titleAlign: "left",
+                        position: "bottom",
+                        rows: [
+                            {
+                                expandable: false,
+                                cols: [
+                                    { src: "Untitled-1.jpg", isVideo: false, framed: false, mobileFeature: true },
+                                    { src: "Untitled-12.jpg", isVideo: false, framed: false, mobileFeature: true }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        let activeProject = null;
+        let detailObserver = null;
+
+        function renderEditorialStrips(filterCategory = 'all') {
+            const container = document.getElementById('editorialContainer');
+            container.innerHTML = '';
+
+            let counter = 1;
+            projects.forEach(project => {
+                if (filterCategory === 'all' || project.categories.includes(filterCategory)) {
+                    const strip = document.createElement('div');
+                    strip.className = 'editorial-strip';
+                    strip.setAttribute('data-category', project.categories.join(' '));
+                    strip.onclick = () => openProject(project.id);
+
+                    const styleAttr = project.thumbPosition ? `style="object-position: ${project.thumbPosition};"` : '';
+                    const mediaElement = project.thumbIsVideo
+                        ? `<video src="${project.thumbSrc}" autoplay loop muted playsinline></video>`
+                        : `<img src="${project.thumbSrc}" alt="${project.title}" ${styleAttr}>`;
+
+                    const formattedNum = String(counter).padStart(2, '0');
+
+                    strip.innerHTML = `
+                        ${mediaElement}
+                        <div class="strip-caption">
+                            <h4 class="strip-number">${formattedNum}</h4>
+                            <h3>${project.title}</h3>
+                            <p>${project.subtitle}</p>
+                        </div>
+                    `;
+                    container.appendChild(strip);
+                    counter++;
+                }
+            });
+        }
+
+        function makeInertialScrollable(container) {
+            if (!container || container._hasInertial) return;
+            container._hasInertial = true;
+
+            let targetScroll = 0;
+            let currentScroll = 0;
+            let isScrolling = false;
+
+            container.addEventListener('wheel', (evt) => {
+                if (!document.body.contains(container)) return;
+
+                if (window.innerWidth > 768 && (evt.deltaX !== 0 || evt.deltaY !== 0)) {
+                    if (Math.abs(container.scrollLeft - currentScroll) > 5) {
+                        targetScroll = container.scrollLeft;
+                        currentScroll = container.scrollLeft;
+                    }
+
+                    evt.preventDefault();
+                    
+                    const scrollDelta = evt.deltaX !== 0 ? evt.deltaX : evt.deltaY;
+                    targetScroll += scrollDelta * 0.8;
+                    targetScroll = Math.max(0, Math.min(targetScroll, container.scrollWidth - container.clientWidth));
+
+                    if (!isScrolling) {
+                        isScrolling = true;
+                        requestAnimationFrame(updateScroll);
+                    }
+                }
+            }, { passive: false });
+
+            function updateScroll() {
+                if (!document.body.contains(container)) {
+                    isScrolling = false;
+                    return; 
+                }
+
+                currentScroll += (targetScroll - currentScroll) * 0.08;
+                container.scrollLeft = currentScroll;
+
+                if (Math.abs(targetScroll - currentScroll) > 0.3) {
+                    requestAnimationFrame(updateScroll);
+                } else {
+                    isScrolling = false;
+                }
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderEditorialStrips('all');
+            makeInertialScrollable(document.getElementById('editorialContainer'));
+        });
+
+        let currentWidth = window.innerWidth;
+        window.addEventListener('resize', () => {
+            const newWidth = window.innerWidth;
+            const crossedBreakpoint = (currentWidth <= 768 && newWidth > 768) || (currentWidth > 768 && newWidth <= 768);
+            if (crossedBreakpoint && activeProject && document.getElementById('detailView').classList.contains('active')) {
+                openProject(activeProject.id);
+            }
+            currentWidth = newWidth;
+        });
+
+        function switchView(viewId) {
+            const currentActive = document.querySelector('.view.active');
+            const targetView = document.getElementById(viewId);
+
+            if (currentActive === targetView) return;
+
+            if (viewId !== 'detailView') {
+                activeProject = null;
+                const centerTitle = document.getElementById('sidebarCenterTitle');
+                if (centerTitle) centerTitle.classList.remove('visible');
+            }
+
+            gsap.killTweensOf([currentActive, targetView]);
+
+            gsap.to(currentActive, {
+                opacity: 0,
+                duration: 0.2,
+                onComplete: () => {
+                    currentActive.classList.remove('active');
+                    targetView.classList.add('active');
+                    gsap.fromTo(targetView, { opacity: 0 }, { opacity: 1, duration: 0.4 });
+                    
+                    window.scrollTo(0, 0);
+                    if (viewId === 'detailView' && activeProject) {
+                        const detailContainer = document.getElementById('detailContainer');
+                        if (detailContainer) detailContainer.scrollTop = 0;
+                    } else if (viewId === 'projectsView') {
+                        const edContainer = document.getElementById('editorialContainer');
+                        if (edContainer) edContainer.scrollLeft = 0;
+                    }
+                }
+            });
+        }
+
+        function filterStrips(category, element) {
+            switchView('projectsView');
+            document.querySelectorAll('.nav-item, .sidebar-brand').forEach(item => item.classList.remove('active'));
+            if(element) element.classList.add('active');
+            renderEditorialStrips(category);
+            const edContainer = document.getElementById('editorialContainer');
+            if (edContainer) edContainer.scrollLeft = 0;
+        }
+
+        function openContact(element) {
+            switchView('contactView');
+            document.querySelectorAll('.nav-item, .sidebar-brand').forEach(item => item.classList.remove('active'));
+            if(element) element.classList.add('active');
+        }
+
+        function getSmartPadding(colIndex, rowIndex, totalCols, totalRows, basePadding) {
+            if (!basePadding) return '0px';
+
+            const match = String(basePadding).match(/^([\d.]+)(.*)$/);
+            if (!match) return basePadding;
+            const val = parseFloat(match[1]);
+            const unit = match[2];
+
+            const isTop = (rowIndex === 0);
+            const isBottom = (rowIndex === totalRows - 1);
+            const isLeft = (colIndex === 0);
+            const isRight = (colIndex === totalCols - 1);
+
+            let pt = isTop ? val * 2 : val;
+            let pr = isRight ? val * 2 : val;
+            let pb = isBottom ? val * 2 : val;
+            let pl = isLeft ? val * 2 : val;
+
+            return `${pt}${unit} ${pr}${unit} ${pb}${unit} ${pl}${unit}`;
+        }
+
+        function updateFloatingHeader(title, description) {
+            const headerEl = document.getElementById('projectFloatingHeader');
+            const titleEl = document.getElementById('floatingTitle');
+            const subtitleEl = document.getElementById('floatingSubtitle');
+
+            if (!headerEl || !titleEl || !subtitleEl) return;
+
+            if (!title) {
+                headerEl.style.display = 'none';
+                return;
+            }
+
+            headerEl.style.display = 'flex';
+            titleEl.innerText = title;
+
+            if (description && description.trim() !== '') {
+                subtitleEl.innerText = description;
+                headerEl.classList.add('has-subtitle');
+            } else {
+                subtitleEl.innerText = '';
+                headerEl.classList.remove('has-subtitle');
+            }
+        }
+
+        function setupDetailScrollObserver() {
+            if (detailObserver) {
+                detailObserver.disconnect();
+            }
+
+            const container = document.getElementById('detailContainer');
+            if (!container) return;
+
+            const elementsToObserve = container.querySelectorAll('.grid-page[data-page-title], .project-row[data-page-title]');
+            if (elementsToObserve.length === 0) return;
+
+            let currentKey = '';
+
+            detailObserver = new IntersectionObserver((entries) => {
+                let bestEntry = null;
+                let maxRatio = 0;
+
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
+                        maxRatio = entry.intersectionRatio;
+                        bestEntry = entry;
+                    }
+                });
+
+                if (bestEntry) {
+                    const title = bestEntry.target.getAttribute('data-page-title') || '';
+                    const desc = bestEntry.target.getAttribute('data-page-description') || '';
+                    const key = title + '::' + desc;
+
+                    if (key !== currentKey) {
+                        currentKey = key;
+                        updateFloatingHeader(title, desc);
+                    }
+                }
+            }, {
+                root: container,
+                threshold: [0.2, 0.5, 0.8]
+            });
+
+            elementsToObserve.forEach(el => {
+                detailObserver.observe(el);
+            });
+        }
+
+        function openProject(projectId) {
+            const project = projects.find(p => p.id === projectId) || projects[0];
+            activeProject = project;
+            
+            // Set active section title in center of sidebar menu
+            const centerTitleEl = document.getElementById('sidebarCenterTitle');
+            const centerTitleTextEl = document.getElementById('sidebarCenterTitleText');
+            if (centerTitleTextEl) centerTitleTextEl.innerText = project.title;
+            if (centerTitleEl) centerTitleEl.classList.add('visible');
+
+            const container = document.getElementById('detailContainer');
+            container.innerHTML = '';
+            
+            function createAnnotation(title, description, align, position) {
+                if (!title && !description) return null;
+                const annotation = document.createElement('div');
+                const posClass = position === 'top' ? 'align-top' : 'align-bottom';
+                
+                let alignClass = 'align-left';
+                if (align === 'right') alignClass = 'align-right';
+                else if (align === 'center') alignClass = 'align-center'; 
+
+                annotation.className = `page-annotation ${posClass} ${alignClass}`;
+
+                let innerHTML = `<div class="annotation-title-wrapper">`;
+                if (description && align === 'right') innerHTML += `<span class="expand-icon">+</span>`;
+                if (title) innerHTML += `<span class="annotation-title">${title}</span>`;
+                if (description && align !== 'right') innerHTML += `<span class="expand-icon">+</span>`;
+                innerHTML += `</div>`;
+
+                if (description) {
+                    annotation.classList.add('has-description');
+                    innerHTML += `<div class="annotation-description">${description}</div>`;
+                    
+                    annotation.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        this.classList.toggle('expanded');
+                    });
+                }
+                annotation.innerHTML = innerHTML;
+                return annotation;
+            }
+
+            let activePages = project.pages;
+            if (!activePages && project.rows) {
+                activePages = [{ rows: project.rows, isVirtual: true }];
+            }
+
+            let firstPageTitle = '';
+            let firstPageDesc = '';
+
+            if (activePages) {
+                activePages.forEach(page => {
+                    let targetContainer = container;
+
+                    if (!page.isVirtual) {
+                        const pageWrapper = document.createElement('div');
+                        pageWrapper.className = 'grid-page' + (page.lightBg ? ' light-mode' : '');
+                        
+                        const pTitle = page.pageTitle || project.title;
+                        const pDesc = page.pageDescription !== undefined ? page.pageDescription : (pTitle === project.title ? project.subtitle : '');
+                        pageWrapper.setAttribute('data-page-title', pTitle);
+                        pageWrapper.setAttribute('data-page-description', pDesc);
+
+                        if (!firstPageTitle) {
+                            firstPageTitle = pTitle;
+                            firstPageDesc = pDesc;
+                        }
+                        
+                        container.appendChild(pageWrapper);
+                        targetContainer = pageWrapper;
+                    }
+
+                    // Build page-level description fallback map for virtual row pages
+                    let lastKnownTitleDescMap = {};
+                    page.rows.forEach(r => {
+                        if (r.pageTitle && r.pageDescription !== undefined) {
+                            lastKnownTitleDescMap[r.pageTitle] = r.pageDescription;
+                        }
+                    });
+                    
+                    page.rows.forEach(rowObj => {
+                        const row = document.createElement('div');
+                        let isExpandable = rowObj.expandable === true || rowObj.expandable === 'both' || rowObj.expandable === 'horizontal' || rowObj.expandable === 'sawtooth';
+                        let isHorizontalOnly = rowObj.expandable === 'horizontal';
+                        let isSawtoothRow = rowObj.expandable === 'sawtooth';
+
+                        row.className = 'project-row' 
+                            + (isExpandable ? ' expandable' : '') 
+                            + (isHorizontalOnly ? ' horizontal-only' : '')
+                            + (isSawtoothRow ? ' sawtooth-row' : '');
+
+                        const rTitle = rowObj.pageTitle || page.pageTitle || project.title;
+                        
+                        let rDesc = '';
+                        if (rowObj.pageDescription !== undefined) {
+                            rDesc = rowObj.pageDescription;
+                        } else if (lastKnownTitleDescMap[rTitle] !== undefined) {
+                            rDesc = lastKnownTitleDescMap[rTitle];
+                        } else if (page.pageDescription !== undefined) {
+                            rDesc = page.pageDescription;
+                        } else if (rTitle === project.title) {
+                            rDesc = project.subtitle || '';
+                        }
+
+                        row.setAttribute('data-page-title', rTitle);
+                        row.setAttribute('data-page-description', rDesc);
+
+                        if (!firstPageTitle) {
+                            firstPageTitle = rTitle;
+                            firstPageDesc = rDesc;
+                        }
+                        
+                        rowObj.cols.forEach(col => {
+                            const box = document.createElement('div');
+                            box.className = `project-media-box ${col.framed ? 'framed' : ''}`;
+                            if (col.mobileFeature) box.classList.add('mobile-feature');
+
+                            if (col.type === 'grid' || col.group) {
+                                box.classList.add('grid-column');
+                                let sourceArray = col.type === 'grid' ? col.images : col.group;
+                                let totalCols = col.gridCols || sourceArray.length;
+                                let totalRows = col.gridRows || Math.ceil(sourceArray.length / totalCols);
+                                
+                                let gridHtml = `<div class="nested-grid" style="grid-template-columns: repeat(${totalCols}, 1fr); grid-template-rows: repeat(${totalRows}, 1fr);">`;
+                                
+                                sourceArray.forEach((item, index) => {
+                                    let imgSrc = typeof item === 'string' ? item : item.src;
+                                    let isVid = typeof item === 'object' ? item.isVideo : false;
+                                    let isFramed = typeof item === 'object' ? item.framed : false;
+                                    let basePadding = typeof item === 'object' ? item.cellPadding : '0px';
+                                    
+                                    let rowIndex = Math.floor(index / totalCols);
+                                    let colIndex = index % totalCols;
+                                    let smartPadding = getSmartPadding(colIndex, rowIndex, totalCols, totalRows, basePadding);
+                                    
+                                    let mediaTag = isVid 
+                                        ? `<video src="${imgSrc}" autoplay loop muted playsinline style="width:100%; height:100%; object-fit:cover;"></video>`
+                                        : `<img src="${imgSrc}" alt="Grid Image" style="width:100%; height:100%; object-fit:cover;">`;
+                                    
+                                    if (isFramed) {
+                                        mediaTag = `<div class="media-frame-inner" style="top:15px; bottom:15px; left:15px; right:15px;">${mediaTag}</div>`;
+                                    }
+                                        
+                                    gridHtml += `<div class="grid-cell ${isFramed ? 'framed' : ''}" style="padding: ${smartPadding};">${mediaTag}</div>`;
+                                });
+                                gridHtml += `</div>`;
+                                box.innerHTML = gridHtml;
+                            } else {
+                                const mediaElement = col.isVideo
+                                    ? `<video src="${col.src}" autoplay loop muted playsinline></video>`
+                                    : `<img src="${col.src}" alt="Project Media">`;
+                                
+                                let audioHtml = '';
+                                if (col.audioSrc) {
+                                    audioHtml = `
+                                        <audio src="${col.audioSrc}" loop></audio>
+                                        <div class="audio-overlay" onclick="toggleAudio(this, event)">
+                                            <div class="audio-play-btn"><div class="play-icon"></div></div>
+                                        </div>
+                                    `;
+                                }
+
+                                const innerClass = `media-frame-inner ${col.framedFit === 'contain' ? 'contain-fit' : ''}`;
+                                box.innerHTML = col.framed ? `<div class="${innerClass}">${mediaElement}${audioHtml}</div>` : mediaElement + audioHtml;
+                            }
+
+                            const colAnn = createAnnotation(col.colTitle, col.colDescription, col.colAlign, col.colPosition);
+                            if (colAnn) box.appendChild(colAnn);
+
+                            row.appendChild(box);
+                        });
+                        targetContainer.appendChild(row);
+                    });
+                });
+            }
+
+            // Set initial page title in top left floating label
+            updateFloatingHeader(firstPageTitle || project.title, firstPageDesc || project.subtitle);
+
+            // Initialize scroll observer to update page title when scrolling
+            setupDetailScrollObserver();
+
+            // --- HOVER LOGIC ENGINE (DESKTOP ONLY) ---
+            if (window.innerWidth > 768) {
+                let pageContainers = container.querySelectorAll('.grid-page');
+                if (pageContainers.length === 0) pageContainers = [container];
+
+                pageContainers.forEach(page => {
+                    const rows = page.querySelectorAll(':scope > .project-row');
+                    rows.forEach((row, rIndex) => {
+                        const boxes = row.querySelectorAll('.project-media-box');
+                        boxes.forEach((box, cIndex) => {
+                            if (row.classList.contains('expandable')) {
+                                box.addEventListener('mouseenter', () => {
+                                    if (!row.classList.contains('horizontal-only') && !row.classList.contains('sawtooth-row')) {
+                                        rows.forEach((otherRow, oRIndex) => {
+                                            otherRow.style.flex = (oRIndex === rIndex) ? '65' : `${35 / (rows.length - 1)}`;
+                                        });
+                                    }
+                                    
+                                    boxes.forEach((otherBox, oCIndex) => {
+                                        if (row.classList.contains('sawtooth-row')) {
+                                            if (oCIndex === cIndex) {
+                                                otherBox.style.flex = '0 0 80%';
+                                            } else {
+                                                otherBox.style.flex = '1 1 0%';
+                                            }
+                                        } 
+                                        else if (row.classList.contains('horizontal-only')) {
+                                            if (oCIndex === cIndex) {
+                                                const media = otherBox.querySelector('img, video');
+                                                let targetWidth = 400;
+                                                
+                                                if (otherBox.classList.contains('grid-column')) {
+                                                    targetWidth = 960; 
+                                                } else if (media) {
+                                                    let natW = media.naturalWidth || media.videoWidth;
+                                                    let natH = media.naturalHeight || media.videoHeight;
+                                                    let boxH = otherBox.clientHeight || container.clientHeight;
+                                                    if (natW && natH && boxH) {
+                                                        targetWidth = boxH * (natW / natH);
+                                                    } else if (media.offsetWidth > 0) {
+                                                        targetWidth = media.offsetWidth * 1.2;
+                                                    }
+                                                }
+                                                otherBox.style.flex = `0 1 ${targetWidth}px`;
+                                            } else {
+                                                otherBox.style.flex = '1 1 0%';
+                                            }
+                                        } 
+                                        else {
+                                            otherBox.style.flex = (oCIndex === cIndex) ? '65' : `${35 / (boxes.length - 1)}`;
+                                        }
+                                    });
+                                });
+                            }
+                        });
+
+                        row.addEventListener('mouseleave', () => {
+                            rows.forEach(r => {
+                                if (!r.classList.contains('horizontal-only') && !r.classList.contains('sawtooth-row')) {
+                                    r.style.flex = '1 1 0%';
+                                }
+                                r.querySelectorAll('.project-media-box').forEach(b => b.style.flex = '1 1 0%');
+                            });
+                        });
+                    });
+                });
+            }
+
+            switchView('detailView');
+        }
+
+        window.toggleAudio = function(overlayEl, event) {
+            event.stopPropagation();
+            const audioEl = overlayEl.previousElementSibling; 
+            const btn = overlayEl.querySelector('.audio-play-btn');
+            
+            if (audioEl.paused) {
+                audioEl.play();
+                btn.innerHTML = `<div class="pause-icon"><div></div><div></div></div>`;
+                overlayEl.classList.add('is-playing');
+            } else {
+                audioEl.pause();
+                btn.innerHTML = `<div class="play-icon"></div>`;
+                overlayEl.classList.remove('is-playing');
+            }
+        };
+
+        document.addEventListener('contextmenu', function(e) {
+            if (e.target.tagName === 'VIDEO' || e.target.tagName === 'IMG' || e.target.closest('.editorial-strip') || e.target.closest('.project-media-box')) {
+                e.preventDefault();
+            }
+        });
+
+        document.addEventListener('dragstart', function(e) {
+            if (e.target.tagName === 'VIDEO' || e.target.tagName === 'IMG') {
+                e.preventDefault();
+            }
+        });
+    </script>
+
+    
+
+</body>
+</html>

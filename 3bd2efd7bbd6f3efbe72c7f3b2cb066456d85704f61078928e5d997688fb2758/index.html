@@ -602,105 +602,118 @@
                 -webkit-overflow-scrolling: touch;
             }
 
-            .detail-view-container > .project-row { 
-                position: relative; 
-                display: flex; 
-                flex-direction: column; 
-                width: 100vw; 
-                height: auto; 
-                flex: none; 
-                scroll-snap-align: none; 
+            /* --- 1. DEFAULT MOBILE LAYOUT (Animation, Trims, etc.) --- */
+            
+            /* FIX: Mobile browsers break scroll-snapping on deeply nested flex elements. 
+               Flattening these wrappers to block ensures native snap targets pass through accurately. */
+            .grid-page {
+                display: block !important; 
+                width: 100vw !important; 
+                height: auto !important;
+                overflow: visible !important; 
             }
 
+            .detail-view-container > .project-row,
+            .grid-page > .project-row { 
+                display: block !important; 
+                width: 100vw !important; 
+                height: auto !important; 
+                scroll-snap-align: none !important; 
+                overflow: visible !important; 
+            }
+
+            /* Snaps cleanly to each image/video, forcing it to fill the entire mobile view height */
             .detail-view-container .project-media-box, 
             .detail-view-container .project-media-box.framed {
-                width: 100vw; 
-                height: calc(100vh - 60px); 
-                height: calc(100dvh - 60px);
+                display: flex !important; /* Keep internal contents centered */
+                width: 100vw !important; 
+                height: calc(100dvh - 60px) !important;
                 scroll-snap-align: start !important; 
                 scroll-snap-stop: always !important; 
-                border-bottom: 1px solid rgba(255, 255, 255, 0.08); 
-                flex: none !important;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+                border-right: none !important;
+                box-sizing: border-box;
             }
 
             .detail-view-container .project-media-box > img,
             .detail-view-container .project-media-box > video { width: 100% !important; height: 100% !important; object-fit: cover !important; }
 
-            /* LOVE ON TOUR MOBILE 2-COLUMN PAIRING (Full + Close-up) */
-            .detail-view-container:has(.lot-row) {
-                display: flex !important;
-                flex-wrap: wrap !important;
-                overflow-y: auto !important;
-                scroll-snap-type: none !important;
+
+            /* --- 2. EMBROIDERY-SPECIFIC MOBILE OVERRIDE --- */
+            /* Restores flex row functionality strictly for the Embroidery page's side-by-side layout */
+            .detail-view-container[data-project-id="Embroidery"] > .project-row,
+            .detail-view-container[data-project-id="Embroidery"] .grid-page > .project-row { 
+                display: flex !important; 
+                flex-direction: row !important; 
+                flex-wrap: nowrap !important; 
+                height: calc(100dvh - 60px) !important; 
+                scroll-snap-align: start !important; 
+                scroll-snap-stop: always !important; 
+                overflow: hidden !important;
             }
 
-            .project-row.lot-row {
-                display: contents !important;
-            }
-
-            .lot-row .project-media-box {
-                width: 50vw !important;
+            .detail-view-container[data-project-id="Embroidery"] .project-media-box,
+            .detail-view-container[data-project-id="Embroidery"] .project-media-box.framed {
+                width: 50vw !important; 
                 flex: 0 0 50vw !important;
-                height: 38vh !important;
-                height: 38dvh !important;
-                scroll-snap-align: none !important;
-                scroll-snap-stop: normal !important;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+                height: calc(100dvh - 60px) !important;
+                scroll-snap-align: none !important; /* The parent row handles snapping here */
                 border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
             }
 
-            .lot-row .project-media-box video,
-            .lot-row .project-media-box img {
-                object-fit: cover !important;
+            .detail-view-container[data-project-id="Embroidery"] .project-media-box:nth-child(even) {
+                border-right: none !important;
             }
 
-            /* Pair Row 1 (Fulls) and Row 2 (Close-ups) Side-by-Side */
-            .lot-row:nth-of-type(1) .project-media-box:nth-child(1) { order: 1; }
-            .lot-row:nth-of-type(2) .project-media-box:nth-child(1) { order: 2; }
 
-            .lot-row:nth-of-type(1) .project-media-box:nth-child(2) { order: 3; }
-            .lot-row:nth-of-type(2) .project-media-box:nth-child(2) { order: 4; }
+            /* General Mobile Formatting */
+            .page-annotation { 
+                width: calc(100% - 16px) !important; 
+                bottom: 12px !important; 
+                left: 8px !important; 
+                right: auto !important; 
+                transform: none !important;
+                padding: 8px 10px !important; 
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                text-align: center !important;
+                box-sizing: border-box !important;
+            }
 
-            .lot-row:nth-of-type(1) .project-media-box:nth-child(3) { order: 5; }
-            .lot-row:nth-of-type(2) .project-media-box:nth-child(3) { order: 6; }
+            .page-annotation .annotation-title-wrapper {
+                width: 100% !important;
+                justify-content: center !important;
+            }
 
-            .lot-row:nth-of-type(1) .project-media-box:nth-child(4) { order: 7; }
-            .lot-row:nth-of-type(2) .project-media-box:nth-child(4) { order: 8; }
-
-            .lot-row:nth-of-type(1) .project-media-box:nth-child(5) { order: 9; }
-            .lot-row:nth-of-type(2) .project-media-box:nth-child(5) { order: 10; }
-
-            .lot-row .page-annotation {
-                width: calc(100% - 12px) !important;
-                bottom: 8px !important;
-                left: 6px !important;
-                right: auto !important;
-                padding: 4px 8px !important;
+            .annotation-title {
+                white-space: normal !important; 
+                word-wrap: break-word !important;
+                text-align: center !important;
+                font-size: 0.7rem !important;
+                line-height: 1.2 !important;
+                text-overflow: clip !important;
             }
             
-            /* Grid-pages with mobile features */
-            .grid-page.light-mode, .grid-page:has(.mobile-feature) {
-                overflow-y: auto !important; scroll-snap-type: none !important; display: flex !important; flex-direction: row !important;
-                flex-wrap: wrap !important; width: 100vw !important; height: auto !important; min-height: 100% !important; scroll-snap-align: none !important; align-content: flex-start; padding: 0 !important;
+            .grid-page.light-mode {
+                padding-top: 0 !important;
+                padding-bottom: 0 !important;
+                background: #ffffff;
             }
-            .grid-page.light-mode .project-row, .grid-page:has(.mobile-feature) .project-row { display: contents !important; }
             
             .grid-page.light-mode .project-media-box:not(.mobile-feature),
             .grid-page:has(.mobile-feature) .project-media-box:not(.mobile-feature) { display: none !important; }
             
+            /* Keeps mobile features like VIP Illustrations standard (100vw wide, full-screen height) */
             .grid-page.light-mode .project-media-box.mobile-feature,
             .grid-page:has(.mobile-feature) .project-media-box.mobile-feature {
-                width: 50vw !important; flex: 0 0 50vw !important; height: 40vh !important; border: none !important; scroll-snap-align: none !important; padding: 10px !important;
+                width: 100vw !important; flex: 0 0 100vw !important; height: calc(100dvh - 60px) !important; border: none !important; border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important; border-right: none !important; padding: 10px !important; scroll-snap-align: start !important;
             }
+
             .grid-page.light-mode .project-media-box img,
             .grid-page.light-mode .project-media-box video,
             .grid-page:has(.mobile-feature) .project-media-box img,
             .grid-page:has(.mobile-feature) .project-media-box video { object-fit: contain !important; }
-
-            .page-annotation { bottom: 20px; width: 220px; padding: 6px 12px; }
-            .page-annotation.align-left { left: 15px; }
-            .page-annotation.align-right { right: 15px; }
-            .page-annotation.align-center { left: 50%; transform: translateX(-50%); }
             
             .contact-container a { font-size: 1.3rem; }
         }
@@ -812,6 +825,7 @@
                         titleAlign: "left"
                     },
                     {
+                        expandable: 'horizontal',
                         cols: [
                             { src: "EmbroideryRenders/SS25-Mirror-001.png", isVideo: false, framed: true },
                             { src: "EmbroideryRenders/SS25-Mirror-002.png", isVideo: false, framed: false,
@@ -820,24 +834,10 @@
                                 colAlign: "center",
                                 colPosition: "bottom"
                              },
-                        ],
-                        pageTitle: "Gucci Spring 2025",
-                        titleAlign: "left"
-                    },
-                    {
-                        expandable: 'horizontal',
-                        cols: [
                             { src: "EmbroideryRenders/CR_BlackLace-001.png", isVideo: false, framed: true },
                             { src: "EmbroideryRenders/CR_BlackLace-002.png", isVideo: false, framed: false,
                                 colTitle: "Black Pizzo",
                                 colDescription: "A 3D look development and drape study replicating a signature all-black monotone gown from the Florence show. The render accurately simulates sheer embellished pizzo integrated with tone-on-tone sequin detailing, capturing intricate transparency, surface shine, and fluid textile physics.",
-                                colAlign: "center",
-                                colPosition: "bottom"
-                             },
-                            { src: "EmbroideryRenders/CR_FireworkKimono-001.png", isVideo: false, framed: true },
-                            { src: "EmbroideryRenders/CR_FireworkKimono-002.png", isVideo: false, framed: false,
-                                colTitle: "Firework Kimono",
-                                colDescription: "3D reproduction of the sheer runway kimono look featuring radiant firework motifs. Developed to evaluate complex material shaders blending pearls, strass, sequins, and micro-beads with soft feather created with hair particles.",
                                 colAlign: "center",
                                 colPosition: "bottom"
                              },
@@ -1284,7 +1284,6 @@
             const project = projects.find(p => p.id === projectId) || projects[0];
             activeProject = project;
             
-            // Set active section title in center of sidebar menu
             const centerTitleEl = document.getElementById('sidebarCenterTitle');
             const centerTitleTextEl = document.getElementById('sidebarCenterTitleText');
             if (centerTitleTextEl) centerTitleTextEl.innerText = project.title;
@@ -1292,6 +1291,7 @@
 
             const container = document.getElementById('detailContainer');
             container.innerHTML = '';
+            container.setAttribute('data-project-id', project.id);
             
             function createAnnotation(title, description, align, position) {
                 if (!title && !description) return null;
@@ -1328,11 +1328,56 @@
                 activePages = [{ rows: project.rows, isVirtual: true }];
             }
 
+            // --- MOBILE PRE-PROCESSOR CHUNKING & ALTERNATING SYSTEM ---
+            // Strictly isolated to the "Embroidery" project so other projects are bypassed.
+            let processedPages = JSON.parse(JSON.stringify(activePages)); 
+
+            if (window.innerWidth <= 768) {
+                processedPages.forEach(page => {
+                    let newRows = [];
+                    for(let i = 0; i < page.rows.length; i++) {
+                        let r = page.rows[i];
+                        
+                        if (project.id === 'Embroidery') {
+                            if (r.pageTitle && i + 1 < page.rows.length && page.rows[i+1].pageTitle === r.pageTitle) {
+                                let nextR = page.rows[i+1];
+                                let mergedCols = [];
+                                let maxLen = Math.max(r.cols.length, nextR.cols.length);
+                                for(let j = 0; j < maxLen; j++) {
+                                    if (j < r.cols.length) mergedCols.push(r.cols[j]);
+                                    if (j < nextR.cols.length) mergedCols.push(nextR.cols[j]);
+                                }
+                                r.cols = mergedCols;
+                                i++; 
+                            }
+                            
+                            let chunkIndex = 0;
+                            for (let k = 0; k < r.cols.length; k += 2) {
+                                let chunk = r.cols.slice(k, k + 2);
+                                
+                                // ALTERNATING LOGIC: Flips every 2nd row for the checkerboard effect
+                                if (chunkIndex % 2 === 1 && chunk.length === 2) {
+                                    chunk = [chunk[1], chunk[0]];
+                                }
+                                
+                                let newRow = Object.assign({}, r, { cols: chunk });
+                                newRows.push(newRow);
+                                chunkIndex++;
+                            }
+                        } else {
+                            // If it's NOT embroidery, leave it completely untouched
+                            newRows.push(r);
+                        }
+                    }
+                    page.rows = newRows;
+                });
+            }
+
             let firstPageTitle = '';
             let firstPageDesc = '';
 
-            if (activePages) {
-                activePages.forEach(page => {
+            if (processedPages) {
+                processedPages.forEach(page => {
                     let targetContainer = container;
 
                     if (!page.isVirtual) {
@@ -1353,7 +1398,6 @@
                         targetContainer = pageWrapper;
                     }
 
-                    // Build page-level description fallback map for virtual row pages
                     let lastKnownTitleDescMap = {};
                     page.rows.forEach(r => {
                         if (r.pageTitle && r.pageDescription !== undefined) {
@@ -1366,10 +1410,8 @@
                         let isExpandable = rowObj.expandable === true || rowObj.expandable === 'both' || rowObj.expandable === 'horizontal' || rowObj.expandable === 'sawtooth';
                         let isHorizontalOnly = rowObj.expandable === 'horizontal';
                         let isSawtoothRow = rowObj.expandable === 'sawtooth';
-                        let isLot = rowObj.pageTitle === "Love on Tour";
 
                         row.className = 'project-row' 
-                            + (isLot ? ' lot-row' : '')
                             + (isExpandable ? ' expandable' : '') 
                             + (isHorizontalOnly ? ' horizontal-only' : '')
                             + (isSawtoothRow ? ' sawtooth-row' : '');
@@ -1459,10 +1501,7 @@
                 });
             }
 
-            // Set initial page title in top left floating label
             updateFloatingHeader(firstPageTitle || project.title, firstPageDesc || project.subtitle);
-
-            // Initialize scroll observer to update page title when scrolling
             setupDetailScrollObserver();
 
             // --- HOVER LOGIC ENGINE (DESKTOP ONLY) ---
